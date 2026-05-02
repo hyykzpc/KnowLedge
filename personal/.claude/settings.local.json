@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(pip list *)",
+      "Bash(python3 -c \"import pkg_resources; pkgs = [d for d in pkg_resources.working_set]; [print\\(p.key\\) for p in pkgs if 'pdf' in p.key.lower\\(\\)]\")",
+      "Bash(pdftotext *)",
+      "Bash(grep -P \"^第.{0,10}章|^11\\\\s\")"
+    ]
+  }
+}
