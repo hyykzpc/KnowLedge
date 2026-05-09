@@ -1,7 +1,7 @@
 ---
 title: 知识库全局索引
 created: 2026-04-29
-updated: 2026-05-02
+updated: 2026-05-05
 type: moc
 tags:
   - #moc
@@ -20,6 +20,7 @@ status: evergreen
 | [[注意力机制反向传播示例\|02 Learning/注意力机制举例_第八章学习笔记追加]] | 注意力机制 BP 数值例子 | developing |
 | [[Transformer-代码实现解析-学习笔记\|02 Learning/Transformer - 多头注意力机制学习笔记]] | Transformer 中的缩放点积注意力与多头注意力完整实现与原理 | developing |
 | [[生成模型笔记\|02 Learning/生成模型 - 第13章学习笔记]] | VAE、GAN、W-GAN 完整推导与对比 | developing |
+| [[深度强化学习笔记\|02 Learning/深度强化学习 - 第14章学习笔记]] | MDP、DQN、Policy Gradient、Actor-Critic 完整推导 | developing |
 
 ## 概念页
 
@@ -33,11 +34,19 @@ status: evergreen
 |------|------|------|
 | 见概念笔记 | 当前学习笔记以概念页形式存在 | — |
 
+## 面试笔记
+
+| 页面 | 说明 | 状态 |
+|------|------|------|
+| [[01 Notes/面试 - 蔚来日常 Agent开发 Q&A]] | Agent/RAG/并发/数据库/Java/Python/C++ 面试 Q&A | developing |
+| [[01 Notes/面试 - Agent开发 50题标准答案]] | Agent 面试 50 题标准答案，9 大模块覆盖全链路 | developing |
+
 ## 原始资料
 
 | 路径 | 说明 |
 |------|------|
 | `01 Sources/llm-wiki.md` | LLM Wiki 原始思想文档 |
+| `01 Sources/面试 - 蔚来日常 agent开发 题目.md` | 蔚来日常实习 Agent 开发面试题目（19题） |
 | `99 Reference/nndl-book.pdf` | 邱锡鹏《神经网络与深度学习》PDF |
 | `99 Reference/nndl-book.txt` | 上述 PDF 的文本提取 |
 
@@ -46,6 +55,7 @@ status: evergreen
 | 页面 | 说明 |
 |------|------|
 | [[深度学习 MOC]] | 深度学习相关笔记索引 |
+| [[Agent 面试 MOC]] | Agent 面试话题索引 |
 | [[知识库全局索引]] | 本页，全局目录 |
 
 ## 模板
