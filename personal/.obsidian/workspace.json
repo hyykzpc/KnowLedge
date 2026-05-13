@@ -11,14 +11,12 @@
             "id": "3b942538df871453",
             "type": "leaf",
             "state": {
-              "type": "markdown",
+              "type": "pdf",
               "state": {
-                "file": "02 Learning/Transformer - 多头注意力机制学习笔记.md",
-                "mode": "source",
-                "source": false
+                "file": "99 Reference/nndl-book.pdf"
               },
-              "icon": "lucide-file",
-              "title": "Transformer - 多头注意力机制学习笔记"
+              "icon": "lucide-file-text",
+              "title": "nndl-book"
             }
           }
         ]
@@ -92,7 +90,8 @@
       }
     ],
     "direction": "horizontal",
-    "width": 200
+    "width": 200,
+    "collapsed": true
   },
   "right": {
     "id": "c87e60f75131e47e",
@@ -180,7 +179,8 @@
       }
     ],
     "direction": "horizontal",
-    "width": 300
+    "width": 300,
+    "collapsed": true
   },
   "left-ribbon": {
     "hiddenItems": {
@@ -192,18 +192,25 @@
       "command-palette:打开命令面板": false,
       "bases:新建数据库": false,
       "templater-obsidian:Templater": false,
-      "obsidian-git:Open Git source control": false,
-      "obsidian-textgenerator-plugin:Generate Text!": false,
-      "obsidian-textgenerator-plugin:Text Generator: Templates Packages Manager": false
+      "obsidian-git:Open Git source control": false
     }
   },
-  "active": "435531092eb4c552",
+  "active": "3b942538df871453",
   "lastOpenFiles": [
-    "02 Learning/注意力机制举例_第八章学习笔记追加.md",
-    "02 Learning/Transformer-代码实现解析-学习笔记.md",
-    "02 Learning/Transformer - 多头注意力机制学习笔记.md",
-    "05 MOC/深度学习 MOC.md",
     "02 Learning/生成模型 - 第13章学习笔记.md",
+    "99 Reference/nndl-book.pdf",
+    "09 System/sed1vY0TR",
+    "05 MOC/sedWDW0BS",
+    "09 System/index.md.tmp.19092.dc4f698ab1e2",
+    "02 Learning/深度强化学习 - 第14章学习笔记.md",
+    "02 Learning/深度强化学习 - 第14章学习笔记.md.tmp.19092.595935c514a4",
+    "02 Learning/注意力机制举例_第八章学习笔记追加.md",
+    "01 Notes/面试 - Agent开发 50题标准答案.md",
+    "01 Notes/面试 - 蔚来日常 Agent开发 Q&A.md",
+    "01 Sources/面试 - 蔚来日常 agent开发 题目.md",
+    "02 Learning/Transformer - 多头注意力机制学习笔记.md",
+    "02 Learning/Transformer-代码实现解析-学习笔记.md",
+    "05 MOC/深度学习 MOC.md",
     "03 Concepts/LLM Wiki 知识库构建法.md",
     "09 System/log.md",
     "06 Templates/MOC模板.md",
@@ -211,7 +218,6 @@
     "99 Archive/notebook_13章_demo.md",
     "09 System/index.md.tmp.10908.1777430395362",
     "02 Learning/生成模型 - 第13章学习笔记.md.tmp.10908.1777430384097",
-    "99 Reference/nndl-book.pdf",
     "02 Learning/notebook_13章_demo.md",
     "01 Sources/llm-wiki.md",
     "09 System/index.md",
@@ -225,15 +231,6 @@
     "06 Templates/笔记模板.md",
     "相关概念.md",
     "copilot/copilot-conversations/If_a_lead_ball_and_a_feather_are_dropped_simultaneously@20260429_100128.md",
-    "copilot/copilot-conversations",
-    "copilot/copilot-custom-prompts/Clip Web Page.md",
-    "copilot/copilot-custom-prompts/Clip YouTube Transcript.md",
-    "copilot/copilot-custom-prompts/Rewrite as tweet thread.md",
-    "copilot/copilot-custom-prompts/Rewrite as tweet.md",
-    "copilot/copilot-custom-prompts/Remove URLs.md",
-    "copilot/copilot-custom-prompts/Generate glossary.md",
-    "copilot/copilot-custom-prompts",
-    "copilot",
-    "code/transformer.py"
+    "copilot/copilot-custom-prompts/Clip Web Page.md"
   ]
 }
