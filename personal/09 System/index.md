@@ -27,12 +27,25 @@ status: evergreen
 | 页面 | 说明 | 状态 |
 |------|------|------|
 | [[LLM Wiki 知识库构建法]] | LLM Wiki 思想——持久化知识库构建方法论 | seed |
+| [[期末复习笔记生成法]] | 期末复习笔记的系统生成方法（教材+PPT+作业整合） | seed |
 
 ## 学习笔记
 
 | 页面 | 说明 | 状态 |
 |------|------|------|
 | 见概念笔记 | 当前学习笔记以概念页形式存在 | — |
+| [[02 Learning/期末复习 - 第1章 绪论]] | 期末复习笔记：AI 概述、表示学习、M-P 模型、BP 推导 | developing |
+
+## 期末复习专题
+
+| 页面 | 说明 | 状态 |
+|------|------|------|
+| [[02 Learning/期末复习 - 第1章 绪论]] | 绪论：AI 发展史、三大流派、表示学习、M-P 模型、感知机、BP 推导 | developing |
+| [[02 Learning/期末复习 - 第3章 无监督学习]] | 聚类/降维/密度估计、PCA 推导、稀疏编码、自编码器家族 | developing |
+| [[02 Learning/期末复习 - 第4章 注意力机制与外部记忆]] | QKV 自注意力、多头注意力、Transformer 架构、外部记忆、Hopfield | developing |
+| [[02 Learning/期末复习 - 第11章 概率图模型]] | PGM 表示、贝叶斯网络、EM 算法推导、推断方法 | developing |
+| [[02 Learning/期末复习 - 第13章 深度生成模型]] | 判别 vs 生成、VAE、GAN、W-GAN、扩散模型 | developing |
+| [[02 Learning/期末复习 - 第14章 深度强化学习]] | MDP、Bellman 方程、DQN、策略梯度、Actor-Critic | developing |
 
 ## 面试笔记
 

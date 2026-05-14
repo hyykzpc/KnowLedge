@@ -11,12 +11,14 @@
             "id": "3b942538df871453",
             "type": "leaf",
             "state": {
-              "type": "pdf",
+              "type": "markdown",
               "state": {
-                "file": "99 Reference/nndl-book.pdf"
+                "file": "docs/project-onboarding.md",
+                "mode": "preview",
+                "source": false
               },
-              "icon": "lucide-file-text",
-              "title": "nndl-book"
+              "icon": "lucide-file",
+              "title": "project-onboarding"
             }
           }
         ]
@@ -179,8 +181,7 @@
       }
     ],
     "direction": "horizontal",
-    "width": 300,
-    "collapsed": true
+    "width": 300
   },
   "left-ribbon": {
     "hiddenItems": {
@@ -197,40 +198,41 @@
   },
   "active": "3b942538df871453",
   "lastOpenFiles": [
-    "02 Learning/生成模型 - 第13章学习笔记.md",
-    "99 Reference/nndl-book.pdf",
-    "09 System/sed1vY0TR",
-    "05 MOC/sedWDW0BS",
-    "09 System/index.md.tmp.19092.dc4f698ab1e2",
-    "02 Learning/深度强化学习 - 第14章学习笔记.md",
-    "02 Learning/深度强化学习 - 第14章学习笔记.md.tmp.19092.595935c514a4",
-    "02 Learning/注意力机制举例_第八章学习笔记追加.md",
-    "01 Notes/面试 - Agent开发 50题标准答案.md",
-    "01 Notes/面试 - 蔚来日常 Agent开发 Q&A.md",
-    "01 Sources/面试 - 蔚来日常 agent开发 题目.md",
-    "02 Learning/Transformer - 多头注意力机制学习笔记.md",
-    "02 Learning/Transformer-代码实现解析-学习笔记.md",
-    "05 MOC/深度学习 MOC.md",
-    "03 Concepts/LLM Wiki 知识库构建法.md",
-    "09 System/log.md",
-    "06 Templates/MOC模板.md",
-    "02 Learning/神经网络与深度学习 - 第8章学习笔记.md",
-    "99 Archive/notebook_13章_demo.md",
-    "09 System/index.md.tmp.10908.1777430395362",
-    "02 Learning/生成模型 - 第13章学习笔记.md.tmp.10908.1777430384097",
-    "02 Learning/notebook_13章_demo.md",
-    "01 Sources/llm-wiki.md",
-    "09 System/index.md",
-    "03 Concepts",
-    "01 Sources",
-    "09 System",
-    "99 Archive/llm-wiki.md",
-    "CLAUDE.md",
-    "CLAUDE.optimized.md",
-    "llm-wiki.md",
-    "06 Templates/笔记模板.md",
-    "相关概念.md",
-    "copilot/copilot-conversations/If_a_lead_ball_and_a_feather_are_dropped_simultaneously@20260429_100128.md",
-    "copilot/copilot-custom-prompts/Clip Web Page.md"
+    "docs/project-learning-index.md",
+    "docs/project-onboarding.md",
+    "docs/key-flows.md",
+    "docs/architecture-views.md",
+    "docs/architecture-design-learning.md",
+    "docs/adr/0001-split-user-service-and-ai-service.md",
+    "02 Learning/期末复习 - 第1章 绪论.md",
+    "architecture-design-learning.md",
+    "docs/adr/0005-use-redis-for-cache-rate-limit-and-token-blacklist.md",
+    "docs/adr/0006-keep-prompts-and-rag-config-outside-code.md",
+    "docs/adr/0002-use-langchain-for-rag-and-agent.md",
+    "docs/adr/0004-use-sse-for-streaming-chat.md",
+    "docs/adr/0003-use-chroma-hybrid-search-and-rerank.md",
+    "docs/troubleshooting.md",
+    "docs/technical-implementation.md",
+    "docs/modelscope_model.md",
+    "docs/adr",
+    "docs",
+    "02 Learning/期末复习 - 第2章 机器学习概述.md",
+    "03 Concepts/期末复习笔记生成法.md",
+    "02 Learning/期末复习 - 第14章 深度强化学习.md",
+    "02 Learning/期末复习 - 第14章 深度强化学习.md.tmp.31676.f0bb082d01ec",
+    "02 Learning/期末复习 - 第13章 深度生成模型.md",
+    "02 Learning/期末复习 - 第11章 概率图模型.md",
+    "02 Learning/期末复习 - 第11章 概率图模型.md.tmp.31676.669abbac6476",
+    "02 Learning/期末复习 - 第4章 注意力机制与外部记忆.md",
+    "02 Learning/期末复习 - 第4章 注意力机制与外部记忆.md.tmp.31676.8ab64393f9db",
+    "02 Learning/期末复习 - 第3章 无监督学习.md",
+    "神经网络复习/作业4/练习题（含个人答案）.md",
+    "神经网络复习/作业4/作业4原题.md",
+    "神经网络复习/作业3/作业3原题.md",
+    "05 MOC/深度学习 MOC.md.tmp.31676.9fe631f20d69",
+    "09 System/log.md.tmp.31676.b45225c4a45f",
+    "09 System/index.md.tmp.31676.891b0ace9747",
+    "02 Learning/期末复习 - 第2章 机器学习概述.md.tmp.31676.0d6c28604e54",
+    "神经网络复习/4注意力机制与外部记忆.pdf"
   ]
 }

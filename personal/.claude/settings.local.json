@@ -4,7 +4,17 @@
       "Bash(pip list *)",
       "Bash(python3 -c \"import pkg_resources; pkgs = [d for d in pkg_resources.working_set]; [print\\(p.key\\) for p in pkgs if 'pdf' in p.key.lower\\(\\)]\")",
       "Bash(pdftotext *)",
-      "Bash(grep -P \"^第.{0,10}章|^11\\\\s\")"
+      "Bash(grep -P \"^第.{0,10}章|^11\\\\s\")",
+      "Bash(pdfinfo \"D:/KnowLedge/personal/神经网络复习/1绪论+-+上传版.pdf\")",
+      "Bash(python -c \"import PyPDF2; print\\('PyPDF2 available'\\)\")",
+      "Bash(python -c \"import fitz; print\\('PyMuPDF available'\\)\")",
+      "Bash(python -c \"import pdfplumber; print\\('pdfplumber available'\\)\")",
+      "Bash(mkdir -p \"/tmp/ppt_pages\")",
+      "Bash(pdftoppm -png -r 200 \"D:/KnowLedge/personal/神经网络复习/1绪论+-+上传版.pdf\" \"/tmp/ppt_pages/page\")",
+      "Read(//tmp/**)",
+      "Bash(cygpath *)",
+      "Bash(python *)",
+      "Bash(pdfinfo \"D:/KnowLedge/personal/神经网络复习/11概率图模型.pdf\")"
     ]
   }
 }
