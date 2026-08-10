@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "docs/project-onboarding.md",
+                "file": "课后练习题_不重复题目_PPT补充校准版.md",
                 "mode": "preview",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "project-onboarding"
+              "title": "课后练习题_不重复题目_PPT补充校准版"
             }
           }
         ]
@@ -92,8 +92,7 @@
       }
     ],
     "direction": "horizontal",
-    "width": 200,
-    "collapsed": true
+    "width": 200
   },
   "right": {
     "id": "c87e60f75131e47e",
@@ -109,7 +108,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "02 Learning/神经网络与深度学习 - 第8章学习笔记.md",
+                "file": "02 Learning/期末复习 - 第2章 机器学习概述.md",
                 "collapseAll": false,
                 "extraContext": true,
                 "sortOrder": "alphabetical",
@@ -119,7 +118,7 @@
                 "unlinkedCollapsed": false
               },
               "icon": "links-coming-in",
-              "title": "神经网络与深度学习 - 第8章学习笔记 的反向链接列表"
+              "title": "期末复习 - 第2章 机器学习概述 的反向链接列表"
             }
           },
           {
@@ -157,13 +156,13 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "02 Learning/Transformer - 多头注意力机制学习笔记.md",
+                "file": "02 Learning/期末复习 - 第2章 机器学习概述.md",
                 "followCursor": false,
                 "showSearch": false,
                 "searchQuery": ""
               },
               "icon": "lucide-list",
-              "title": "Transformer - 多头注意力机制学习笔记 的大纲"
+              "title": "期末复习 - 第2章 机器学习概述 的大纲"
             }
           },
           {
@@ -181,7 +180,8 @@
       }
     ],
     "direction": "horizontal",
-    "width": 300
+    "width": 349,
+    "collapsed": true
   },
   "left-ribbon": {
     "hiddenItems": {
@@ -198,41 +198,41 @@
   },
   "active": "3b942538df871453",
   "lastOpenFiles": [
-    "docs/project-learning-index.md",
-    "docs/project-onboarding.md",
-    "docs/key-flows.md",
-    "docs/architecture-views.md",
-    "docs/architecture-design-learning.md",
-    "docs/adr/0001-split-user-service-and-ai-service.md",
+    "02 Learning/ai_chip_exam_review.md",
+    "02 Learning/README(6).md",
+    "02 Learning/jiangxi_smart_agri_eco_ml_guide.zip",
+    "02 Learning/题/期末复习题库_完整覆盖版_含答案.md",
+    "02 Learning/题/期末复习_易考概念简答比较题_标准答案版.md",
+    "02 Learning/题/期末复习重点_计算题与推导题专项_含思路答案.md",
+    "02 Learning/期末复习重点总结（录音整理）1.md",
+    "02 Learning/题",
+    "02 Learning/新建文件夹",
+    "02 Learning/期末复习重点总结（录音整理）.md",
+    "02 Learning/Transformer - 多头注意力机制学习笔记.md",
+    "02 Learning/注意力机制举例_第八章学习笔记追加.md",
+    "02 Learning/期末复习指导_yxy部分.md",
+    "02 Learning/期末复习 - 第2章 机器学习概述.md",
     "02 Learning/期末复习 - 第1章 绪论.md",
-    "architecture-design-learning.md",
-    "docs/adr/0005-use-redis-for-cache-rate-limit-and-token-blacklist.md",
+    "02 Learning/概率图模型 - 第11章学习笔记.md",
+    "02 Learning/期末复习 - 第11章 概率图模型.md",
+    "02 Learning/期末复习 - 第13章 深度生成模型.md",
     "docs/adr/0006-keep-prompts-and-rag-config-outside-code.md",
-    "docs/adr/0002-use-langchain-for-rag-and-agent.md",
+    "docs/adr/0005-use-redis-for-cache-rate-limit-and-token-blacklist.md",
     "docs/adr/0004-use-sse-for-streaming-chat.md",
     "docs/adr/0003-use-chroma-hybrid-search-and-rerank.md",
-    "docs/troubleshooting.md",
-    "docs/technical-implementation.md",
-    "docs/modelscope_model.md",
+    "docs/adr/0002-use-langchain-for-rag-and-agent.md",
+    "docs/adr/0001-split-user-service-and-ai-service.md",
+    "docs/architecture-views.md",
+    "docs/architecture-design-learning.md",
+    "docs/key-flows.md",
+    "docs/project-learning-index.md",
+    "docs/project-onboarding.md",
     "docs/adr",
     "docs",
-    "02 Learning/期末复习 - 第2章 机器学习概述.md",
-    "03 Concepts/期末复习笔记生成法.md",
-    "02 Learning/期末复习 - 第14章 深度强化学习.md",
     "02 Learning/期末复习 - 第14章 深度强化学习.md.tmp.31676.f0bb082d01ec",
-    "02 Learning/期末复习 - 第13章 深度生成模型.md",
-    "02 Learning/期末复习 - 第11章 概率图模型.md",
     "02 Learning/期末复习 - 第11章 概率图模型.md.tmp.31676.669abbac6476",
-    "02 Learning/期末复习 - 第4章 注意力机制与外部记忆.md",
     "02 Learning/期末复习 - 第4章 注意力机制与外部记忆.md.tmp.31676.8ab64393f9db",
-    "02 Learning/期末复习 - 第3章 无监督学习.md",
-    "神经网络复习/作业4/练习题（含个人答案）.md",
-    "神经网络复习/作业4/作业4原题.md",
-    "神经网络复习/作业3/作业3原题.md",
     "05 MOC/深度学习 MOC.md.tmp.31676.9fe631f20d69",
-    "09 System/log.md.tmp.31676.b45225c4a45f",
-    "09 System/index.md.tmp.31676.891b0ace9747",
-    "02 Learning/期末复习 - 第2章 机器学习概述.md.tmp.31676.0d6c28604e54",
-    "神经网络复习/4注意力机制与外部记忆.pdf"
+    "09 System/log.md.tmp.31676.b45225c4a45f"
   ]
 }

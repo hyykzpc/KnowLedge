@@ -1,0 +1,7 @@
+{
+  "newLinkFormat": "shortest",
+  "attachmentFolderPath": "./attachments",
+  "showUnsupportedFiles": true,
+  "promptDelete": false,
+  "alwaysUpdateLinks": true
+}

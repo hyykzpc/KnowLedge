@@ -1,0 +1,249 @@
+{
+  "main": {
+    "id": "8274775c87407c96",
+    "type": "split",
+    "children": [
+      {
+        "id": "e2073f093ade2d0d",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "000d5cf243f9208a",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "OpenCV学习/02 Learning/第18章 OpenCV的DNN模块.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "第18章 OpenCV的DNN模块"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "40671117c87328a8",
+    "type": "split",
+    "children": [
+      {
+        "id": "3890f39b572afec5",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "9375e6cecd3f314c",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "alphabetical",
+                "autoReveal": false,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-folder-closed",
+              "title": "文件列表"
+            }
+          },
+          {
+            "id": "072362a9bcb74fd7",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              },
+              "icon": "lucide-search",
+              "title": "搜索"
+            }
+          },
+          {
+            "id": "cfb90210732c5570",
+            "type": "leaf",
+            "state": {
+              "type": "bookmarks",
+              "state": {},
+              "icon": "lucide-bookmark",
+              "title": "书签"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300
+  },
+  "right": {
+    "id": "b99cad9953a23bf7",
+    "type": "split",
+    "children": [
+      {
+        "id": "a4cdeecaf96edb02",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "17470de071a9bb1a",
+            "type": "leaf",
+            "state": {
+              "type": "empty",
+              "state": {},
+              "icon": "lucide-file",
+              "title": "新标签页"
+            }
+          }
+        ]
+      },
+      {
+        "id": "00963eac0e5c6786",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "ca1d9d8738ea9128",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "file": "OpenCV学习/02 Learning/第18章 OpenCV的DNN模块.md",
+                "collapseAll": true,
+                "extraContext": true,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-coming-in",
+              "title": "反向链接"
+            }
+          },
+          {
+            "id": "0dbf16341ccc28b6",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "file": "theme/TIPS for Blue Topaz/Example/任务卡片-dataview 任务查询举例.md",
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-going-out",
+              "title": "任务卡片-dataview 任务查询举例 的出链列表"
+            }
+          },
+          {
+            "id": "600900238a075bc7",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-tags",
+              "title": "标签"
+            }
+          },
+          {
+            "id": "cd499e41723bddd8",
+            "type": "leaf",
+            "state": {
+              "type": "all-properties",
+              "state": {
+                "sortOrder": "frequency",
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-archive",
+              "title": "添加笔记属性"
+            }
+          },
+          {
+            "id": "a5270ddeca7149c7",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "file": "OpenCV学习/02 Learning/第5章 图像梯度计算.md",
+                "followCursor": true,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-list",
+              "title": "第5章 图像梯度计算 的大纲"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 310.5
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "switcher:打开快速切换": false,
+      "graph:查看关系图谱": false,
+      "canvas:新建白板": false,
+      "daily-notes:打开/创建今天的日记": false,
+      "templates:插入模板": false,
+      "command-palette:打开命令面板": false,
+      "bases:新建数据库": false,
+      "obsidian-git:Open Git source control": false
+    }
+  },
+  "active": "9375e6cecd3f314c",
+  "lastOpenFiles": [
+    "Obsidian_data",
+    "OpenCV学习/02 Learning/第10章 文档扫描OCR识别.md",
+    "OpenCV学习/02 Learning/第11章 图像特征-Harris.md",
+    "OpenCV学习/02 Learning/第9章 信用卡数字识别.md",
+    "OpenCV学习/02 Learning/第4章 图像形态学操作.md",
+    "theme/TIPS for Blue Topaz/Example/任务卡片-dataview 任务查询举例.md",
+    "OpenCV学习/02 Learning/第8章 直方图与傅里叶变换.md",
+    "OpenCV学习/02 Learning/第7章 图像金字塔与轮廓检测.md",
+    "OpenCV学习/02 Learning/第6章 边缘检测.md",
+    "theme/TIPS for Blue Topaz/Example/77-Example.md",
+    "OpenCV学习/02 Learning/第5章 图像梯度计算.md",
+    "6.2 非极大值抑制.md",
+    "OpenCV学习/02 Learning/第3章 阈值与平滑处理.md",
+    "OpenCV学习/02 Learning/第2章 图像基本操作.md",
+    "README.md",
+    "theme/TIPS for Blue Topaz/Example/◾ TableExample/03 - FlatBlue.md",
+    "theme/TIPS for Blue Topaz/Example/◾ TableExample/01 - Default Table.md",
+    "theme/TIPS for Blue Topaz/Example/单独定制笔记背景.md",
+    "theme/TIPS for Blue Topaz/Example/表格自定义样式.md",
+    "theme/TIPS for Blue Topaz/🥑Blue Topaz Themes Tips.md",
+    "theme/TIPS for Blue Topaz/从这开始.md",
+    "theme/TIPS for Blue Topaz/Example/◾ TableExample/◾ TableExample.md",
+    "theme/TIPS for Blue Topaz/Example/◾ TableExample/07 - Center Table.md",
+    "theme/TIPS for Blue Topaz/Example/◾ TableExample/06 - Yellow cab.md",
+    "theme/TIPS for Blue Topaz/Example/◾ TableExample/05 - White red.md",
+    "theme/TIPS for Blue Topaz/Example/◾ TableExample/05 - White red rounded.md",
+    "theme/TIPS for Blue Topaz/Example/◾ TableExample",
+    "theme/TIPS for Blue Topaz/Example/◾ Cssclass声明样式举例",
+    "theme/TIPS for Blue Topaz/Example/Reading",
+    "theme/TIPS for Blue Topaz/Example",
+    "theme/TIPS for Blue Topaz/Attachemnt/让子弹飞海报.jpg",
+    "theme/TIPS for Blue Topaz/Attachemnt/Pasted image 20220424112941.png",
+    "theme/TIPS for Blue Topaz/Attachemnt/Pasted image 20220424111837.png",
+    "theme/TIPS for Blue Topaz/Attachemnt/Pasted image 20220424110626.png",
+    "theme/TIPS for Blue Topaz/Attachemnt/Pasted image 20220424110353.png",
+    "theme/TIPS for Blue Topaz/Attachemnt/Pasted image 20220331161219.png",
+    "theme/TIPS for Blue Topaz/Attachemnt/Pasted image 20211229171215.png",
+    "theme/TIPS for Blue Topaz/Attachemnt/obsidian_image.png",
+    "theme/TIPS for Blue Topaz/Attachemnt",
+    "theme/TIPS for Blue Topaz",
+    "theme",
+    "新建文件夹"
+  ]
+}
