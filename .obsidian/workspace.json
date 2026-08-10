@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "README.md",
+                "file": "论文学习/精读列表.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "README"
+              "title": "精读列表"
             }
           }
         ]
@@ -112,7 +112,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "README.md",
+                "file": "论文学习/精读列表.md",
                 "collapseAll": true,
                 "extraContext": true,
                 "sortOrder": "alphabetical",
@@ -201,11 +201,12 @@
       "obsidian-git:Open Git source control": false
     }
   },
-  "active": "9375e6cecd3f314c",
+  "active": "000d5cf243f9208a",
   "lastOpenFiles": [
+    "README.md",
+    "论文学习/精读列表.md",
     "论文学习",
     "论文学习.md",
-    "README.md",
     "test.md",
     "OpenCV学习/02 Learning/第18章 OpenCV的DNN模块.md",
     "Obsidian_data",
