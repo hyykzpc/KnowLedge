@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "OpenCV学习/02 Learning/第18章 OpenCV的DNN模块.md",
+                "file": "test.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "第18章 OpenCV的DNN模块"
+              "title": "test"
             }
           }
         ]
@@ -112,7 +112,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "OpenCV学习/02 Learning/第18章 OpenCV的DNN模块.md",
+                "file": "test.md",
                 "collapseAll": true,
                 "extraContext": true,
                 "sortOrder": "alphabetical",
@@ -201,8 +201,10 @@
       "obsidian-git:Open Git source control": false
     }
   },
-  "active": "9375e6cecd3f314c",
+  "active": "000d5cf243f9208a",
   "lastOpenFiles": [
+    "OpenCV学习/02 Learning/第18章 OpenCV的DNN模块.md",
+    "test.md",
     "Obsidian_data",
     "OpenCV学习/02 Learning/第10章 文档扫描OCR识别.md",
     "OpenCV学习/02 Learning/第11章 图像特征-Harris.md",
@@ -228,7 +230,6 @@
     "theme/TIPS for Blue Topaz/Example/◾ TableExample/07 - Center Table.md",
     "theme/TIPS for Blue Topaz/Example/◾ TableExample/06 - Yellow cab.md",
     "theme/TIPS for Blue Topaz/Example/◾ TableExample/05 - White red.md",
-    "theme/TIPS for Blue Topaz/Example/◾ TableExample/05 - White red rounded.md",
     "theme/TIPS for Blue Topaz/Example/◾ TableExample",
     "theme/TIPS for Blue Topaz/Example/◾ Cssclass声明样式举例",
     "theme/TIPS for Blue Topaz/Example/Reading",
