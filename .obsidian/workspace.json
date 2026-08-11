@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "论文学习/精读笔记/02-水下语义敏感增强/未命名.md",
+                "file": "论文学习/精读笔记/06-Multinex/关键点.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "未命名"
+              "title": "关键点"
             }
           }
         ]
@@ -112,7 +112,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "论文学习/精读笔记/02-水下语义敏感增强/未命名.md",
+                "file": "论文学习/精读笔记/06-Multinex/关键点.md",
                 "collapseAll": true,
                 "extraContext": true,
                 "sortOrder": "alphabetical",
@@ -203,8 +203,10 @@
   },
   "active": "000d5cf243f9208a",
   "lastOpenFiles": [
+    "论文学习/精读笔记/06-Multinex/Multinex.md",
+    "论文学习/精读笔记/06-Multinex/关键点.md",
+    "论文学习/精读笔记/02-水下语义敏感增强/关键点.md",
     "论文学习/精读笔记/02-水下语义敏感增强/水下语义敏感增强.md",
-    "论文学习/精读笔记/02-水下语义敏感增强/未命名.md",
     "论文学习/精读笔记/01-4KAgent/关键点.md",
     "论文学习/精读列表.md",
     "论文学习/精读笔记/01-4KAgent/4KAgent.md",
@@ -229,8 +231,6 @@
     "6.2 非极大值抑制.md",
     "OpenCV学习/02 Learning/第3章 阈值与平滑处理.md",
     "OpenCV学习/02 Learning/第2章 图像基本操作.md",
-    "theme/TIPS for Blue Topaz/Example/◾ TableExample/03 - FlatBlue.md",
-    "theme/TIPS for Blue Topaz/Example/◾ TableExample/01 - Default Table.md",
     "theme/TIPS for Blue Topaz/Example/◾ TableExample",
     "theme/TIPS for Blue Topaz/Example/◾ Cssclass声明样式举例",
     "theme/TIPS for Blue Topaz/Example/Reading",
