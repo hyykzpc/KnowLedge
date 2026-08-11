@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "论文学习/精读笔记/01-4KAgent/4KAgent.md",
+                "file": "论文学习/精读笔记/01-4KAgent/关键点.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "4KAgent"
+              "title": "关键点"
             }
           }
         ]
@@ -112,7 +112,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "论文学习/精读笔记/01-4KAgent/4KAgent.md",
+                "file": "论文学习/精读笔记/01-4KAgent/关键点.md",
                 "collapseAll": true,
                 "extraContext": true,
                 "sortOrder": "alphabetical",
@@ -203,10 +203,11 @@
   },
   "active": "000d5cf243f9208a",
   "lastOpenFiles": [
-    "论文学习/精读笔记/03-DATPRL-IR/DATPRL-IR.md",
-    "论文学习/精读笔记/00-精读笔记索引.md",
     "论文学习/精读笔记/02-水下语义敏感增强/水下语义敏感增强.md",
     "论文学习/精读笔记/01-4KAgent/4KAgent.md",
+    "论文学习/精读笔记/01-4KAgent/关键点.md",
+    "论文学习/精读笔记/03-DATPRL-IR/DATPRL-IR.md",
+    "论文学习/精读笔记/00-精读笔记索引.md",
     "论文学习/精读列表.md",
     "README.md",
     "论文学习",
@@ -230,7 +231,6 @@
     "theme/TIPS for Blue Topaz/Example/◾ TableExample/03 - FlatBlue.md",
     "theme/TIPS for Blue Topaz/Example/◾ TableExample/01 - Default Table.md",
     "theme/TIPS for Blue Topaz/Example/单独定制笔记背景.md",
-    "theme/TIPS for Blue Topaz/Example/表格自定义样式.md",
     "theme/TIPS for Blue Topaz/Example/◾ TableExample",
     "theme/TIPS for Blue Topaz/Example/◾ Cssclass声明样式举例",
     "theme/TIPS for Blue Topaz/Example/Reading",
