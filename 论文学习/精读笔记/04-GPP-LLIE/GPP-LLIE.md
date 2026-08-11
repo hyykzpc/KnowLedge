@@ -126,3 +126,81 @@ LayerNorm 原本只根据当前特征做归一化；GPP-LN 让“图像整体有
 - 为什么需要 `S` 和 `M` 两种先验？因为只知道全图“差”不能定位局部过暗区域，只看 patch 又缺少整体曝光语境。
 - 为什么不直接把 `S` 加到 latent？直接相加改变数值分布过于生硬；GPP-LN 把先验转为归一化后的尺度/偏移，更像条件调制。
 - 这篇论文与水下语义敏感增强的共同点是什么？都是把 VLM 输出转换为可作用于恢复网络的先验；区别是前者主要建模低层感知质量，后者主要建模对象语义与空间位置。
+
+## 10. 按论文结构完整通读
+
+### 摘要与引言：为什么要引入“生成感知先验”
+
+论文的出发点不是低光增强在所有指标上都不够高，而是现有模型在真实场景中容易失衡：有的结果太暗，有的过曝，有的颜色不自然，有的虽然提亮却把纹理弄平滑。引言把这种问题归因于真实照明条件多样、噪声强度复杂，以及训练数据与真实图像的分布差异。
+
+随后作者回顾三类既有方法：手工描述子和传统增强、端到端深度模型、Retinex/边缘/语义/照明先验。它们的共同问题是先验需要从严重退化图像中预测，预测错了就会误导恢复；语义先验还有预定义类别限制。
+
+扩散模型段落说明了为什么选择生成式路线：扩散模型比 GAN 更不容易发生 mode collapse，适合生成细节；但已有扩散 LLIE 多用 U-Net，尚未充分探索 Transformer backbone。作者于是提出两个外部先验和两个注入模块，而不是直接把 LLaVA 的 embedding 拼到网络输入。
+
+### 相关工作的完整定位
+
+论文相关工作主要讨论两条线：
+
+1. **Diffusion-based LLIE**：Diff-Retinex 在照明/反射空间使用扩散，Reti-Diff 在 latent space 扩散，CLEDiff 用亮度条件，PyDiff 逐步增加反向过程分辨率。这些方法都说明扩散适合生成细节，但仍主要是 U-Net。
+2. **Vision-language guidance**：CLIP/VLM 已被用于 caption、prompt 和 restoration control；论文认为只使用语义 caption 不足以描述低光图像的 visibility、contrast、sharpness，因此要设计专门的评价指令和量化流程。
+
+### 方法 3.1：VLM 感知为什么要分全局与局部
+
+作者使用 LLaVA，并依赖其在 Q-Instruct 上针对低层视觉的指令微调能力。具体不是让 LLaVA 说“这是一朵花”，而是先定义 Attribute 和 Definition：
+
+- visibility：细节能否被看见和识别；
+- contrast：对象与周围区域在亮度或颜色上的可区分程度；
+- sharpness：细节和边缘的清晰度。
+
+全局评价直接对整张图询问；局部评价把输入切成非重叠 patch，再逐块评估。这样 Quality Map 反映不同区域的曝光与清晰程度，特别适合室外阴影、天空、高光和局部光源同时存在的场景。
+
+### 方法 3.2：为什么用 good/poor 的概率差
+
+论文观察到直接取最高概率 token 常得到无语义的词，例如句首 “The”。作者选择上下文中有评价意义的正/负 token，并用：
+
+```text
+S = (1 + exp(-(P_pos - P_neg)/α))^(-1)
+```
+
+当 `P_pos` 大于 `P_neg` 时，S 变大；两者接近时，S 约为 0.5。它不是绝对标定的“亮度分数”，而是把 VLM 的相对判断转成稳定的连续条件。每个 patch 同样计算后，得到 `M`。
+
+### 方法 3.3：扩散训练与推理的关系
+
+训练时 paired NL/LL 图像分别编码为 `z^0_nl` 和 `z_ll`，对正常光 latent 做 forward diffusion 得到 `z^T_nl`。反向网络从随机噪声预测正常光 latent；低光 latent 和 GPP 先验是条件。训练总迭代 1.5M，crop 为 320×320，batch size 16，扩散训练步数 1000，推理采样步数 25。
+
+这意味着模型学习的不是“直接把低光 RGB 映射到正常光 RGB”，而是学习条件化去噪过程；低光输入提供内容保真，VLM 先验提供增强策略。
+
+### 方法 3.4：GPP-LLIE Block 的四个设计
+
+1. **Concat-and-Remove**：每个 block 开头注入 `z_ll`，末尾移除一半通道，保持内容条件持续存在且控制计算量。
+2. **GPP-LN**：用全局 `S` 通过 MLP 生成 `γ、β`，对 LN 的输出进行 scale/shift。
+3. **LPP-Attn**：让局部图 `M` 指导 key/value，并沿 channel 方向计算注意力，避免高分辨率空间 self-attention 的巨大开销。
+4. **去掉固定 positional embedding**：原始 DiT 依赖固定分辨率的位置嵌入，本文改用由局部先验指导的空间位置学习，以适配可变大小 LL 图像。
+
+## 11. 训练数据、评价和结果的完整阅读
+
+配对数据包括 LOL（485/15）、LOL-v2-real（689/100）、LOL-v2-synthetic（900/100）；无 GT 真实数据包括 MEF、LIME、DICM、NPE。配对数据用 FID、LPIPS、DISTS、PSNR，无参考数据用 NIQE。
+
+主表中，GPP-LLIE 在 LOL 上 FID 36.73、LPIPS 0.081、DISTS 0.063、PSNR 27.51；在 LOL-v2-real 上 FID 26.78、LPIPS 0.055、DISTS 0.047、PSNR 29.23；在 LOL-v2-synthetic 上 FID 9.74、LPIPS 0.031、DISTS 0.039、PSNR 30.17。论文报告相较最好基线，FID 在三个数据集上分别有 23.6%、37.4%、26.5% 的改善，LPIPS 相对 PyDiff 改善 18.4%。
+
+无参考表中，MEF/LIME/DICM/NPE 的 NIQE 分别为 3.55、4.24、3.58、4.05，平均 3.67。论文在 real-world 图中强调它能同时提亮暗处、保留天空和高光、减少过曝，而不是单纯把全图拉亮。
+
+## 12. 消融实验逐项解释
+
+### 12.1 局部先验与 LPP-Attn
+
+Variant 1 删除 local perceptual prior 与 LPP-Attn，FID/LPIPS/DISTS/PSNR 变为 49.83/0.103/0.084/26.88。Variant 2 用 StableSR 中的 spatial feature transform 替换 LPP-Attn，结果 47.18/0.100/0.081/27.06；完整模型为 36.73/0.081/0.063/27.51。
+
+结论不是“attention 一定最好”，而是该局部图需要一种能让每个区域/通道按质量差异调制的方式；论文设计的 LPP-Attn 与局部先验匹配得更好。
+
+### 12.2 全局先验与 GPP-LN
+
+Variant 3 去掉全局先验，FID 61.36、LPIPS 0.113；Variant 4 不用 GPP-LN，而是把分数直接加到 noised latent，FID 58.36、LPIPS 0.111。完整 GPP-LN 的 FID 36.73、LPIPS 0.081。
+
+这证明“有先验”与“如何注入先验”是两件事。直接加分数会破坏 latent 的数值统计；通过归一化的 scale/shift 调制，更像条件化网络状态。
+
+## 13. 与其他论文的关系和全文局限
+
+GPP-LLIE 与 Multinex 都处理低光，但路线相反：Multinex 用可解释解析颜色/亮度先验和极小 CNN，GPP-LLIE 用 VLM 感知先验和扩散 Transformer。前者追求边缘效率，后者追求真实感与未见照明泛化。
+
+本文的局限包括：VLM 评分依赖 prompt 和模型校准；25 步扩散仍比轻量前向网络慢；VLM 先验可能把人类感知偏好带入医学/机器视觉任务；FID/LPIPS 变好不能排除幻觉纹理。因此，读者应把它看成“用外部感知判断调节生成式恢复”的研究，而不是一个可直接替代物理曝光测量的系统。

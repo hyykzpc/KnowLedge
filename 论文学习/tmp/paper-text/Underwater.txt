@@ -1,0 +1,578 @@
+                                        The Fortieth AAAI Conference on Artificial Intelligence (AAAI-26)
+
+
+
+
+    Empowering Semantic-Sensitive Underwater Image Enhancement with VLM
+      Guodong Fan1 , Shengning Zhou1 , Genji Yuan1 , Huiyu Li2 , Jingchun Zhou3 , Jinjiang Li1 *
+                                    1
+                                   Shandong Technology and Business University, Yantai, China
+                                    2
+                                   Shandong University of Finance and Economics, Jinan, China
+                                          3
+                                            Dalian Maritime University, Dalian, China
+                            fgd96@outlook.com, 2023420043@sdtbu.edu.cn, 202414175@sdtbu.edu.cn,
+                               huiyuroy@163.com, zhoujingchun03@qq.com, lijinjiang@gmail.com
+
+
+                            Abstract                                         is due to the ”task-agnostic” or ”semantic-blind” nature of
+                                                                             current UIE methods. In their pursuit of global, uniform en-
+  In recent years, learning-based underwater image enhance-
+  ment (UIE) techniques have rapidly evolved. However, dis-
+                                                                             hancement, they often introduce imperceptible artifacts or
+  tribution shifts between high-quality enhanced outputs and                 cause a distribution shift that is misaligned with the data ex-
+  natural images can hinder semantic cue extraction for down-                pectations of downstream models (Liu et al. 2019b; Fu et al.
+  stream vision tasks, thereby limiting the adaptability of exist-           2022). This reveals their fundamental limitation: an inability
+  ing enhancement models. To address this challenge, this work               to distinguish between semantic focal points (e.g., marine
+  proposes a new learning mechanism that leverages Vision-                   creatures, artifacts) and non-focal points (e.g., background
+  Language Models (VLMs) to empower UIE models with                          water), leading to the corruption of semantic cues vital for
+  semantic-sensitive capabilities. To be concrete, our strategy              machine understanding.
+  first generates textual descriptions of key objects from a de-
+  graded image via VLMs. Subsequently, a text-image align-
+                                                                                To solve this problem, researchers have begun to explore
+  ment model remaps these relevant descriptions back onto                    semantic-guided enhancement strategies. Early works lever-
+  the image to produce a spatial semantic guidance map. This                 aged semantic segmentation maps to guide feature learning
+  map then steers the UIE network through a dual-guidance                    or pixel fusion (Wu et al. 2023). However, these methods de-
+  mechanism, which combines cross-attention and an explicit                  pend heavily on high-quality, pixel-level annotations, which
+  alignment loss. This forces the network to focus its restora-              are notoriously scarce in underwater domains, risking the
+  tive power on semantic-sensitive regions during image recon-               introduction of erroneous priors.
+  struction, rather than pursuing a globally uniform improve-                   More recently, with the rise of VLMs, some have em-
+  ment, thereby ensuring the faithful restoration of key object
+                                                                             ployed global, style-driven text prompts to guide image
+  features. Experiments confirm that when our strategy is ap-
+  plied to different UIE baselines, significantly boosts their per-          restoration (Pei, Huang, and Zhang 2020). For instance, us-
+  formance on perceptual quality metrics as well as enhances                 ing a prompt like ”a clear underwater photo” can improve
+  their performance on detection and segmentation tasks, vali-               overall image quality. While innovative, this approach is still
+  dating its effectiveness and adaptability.                                 essentially a ”one-size-fits-all” strategy. It does not pay at-
+                                                                             tention to the specific semantic content within the image,
+                                                                             and thus cannot achieve the fine-grained, object-centric pro-
+                        Introduction                                         cessing required for a truly robust enhancement. A clear gap
+Underwater image processing is a critical technology in                      remains in achieving targeted, content-aware enhancement.
+fields such as ocean exploration, biological monitoring, and                    To this end, we propose a powerful semantic-sensitive
+underwater robotics (González-Sabbagh and Robles-Kelly                      UIE strategy, the core of which is to use the open-world
+2023; Wang et al. 2019). Due to severe degradation from                      understanding ability of VLMs to empower the UIE model
+light absorption and scattering, UIE has emerged as an                       to perceive and focus on key semantic regions. Specifically,
+essential pre-processing step. While recent deep learning-                   our mechanism first utilizes a VLM to generate textual de-
+based methods have achieved remarkable success in pro-                       scriptions of core objects from the input degraded image.
+ducing visually pleasing results for human observers (Jiang                  Then, through a text-image alignment model, we accurately
+et al. 2023), a significant challenge has surfaced: a discon-                map these high-level semantic descriptions back to the 2D
+nect between perceptual image quality and the performance                    space of the image, thus generating a spatial semantic guid-
+of machine cognition tasks.                                                  ance map. Finally, this map is efficiently injected into the
+   We observe that state-of-the-art (SOTA) enhancement                       decoder of the UIE network through a dual-guidance mech-
+does not consistently translate to improved performance on                   anism, combining cross-attention and an explicit alignment
+tasks like object detection or segmentation (Tolie, Ren, and                 loss. This guides the network to allocate more resources to
+Elyan 2024; Zhu et al. 2019), as illustrated in Fig. 1(b). This              semantically vital regions during image reconstruction. This
+    * Corresponding author.                                                  design makes the enhancement process no longer a blind
+Copyright © 2026, Association for the Advancement of Artificial              pursuit of global visual improvement, but an intelligent,
+Intelligence (www.aaai.org). All rights reserved.                            content-aware restoration process that ensures the structure
+
+
+                                                                      3759
+Figure 1: Impact of our semantic-sensitive strategy on downstream tasks. The radar charts on the left demonstrate consistent
+quantitative improvements in semantic segmentation and object detection when baseline models are empowered by our -SS
+strategy (in Red). Correspondingly, the qualitative examples on the right illustrate these benefits: our method leads to segmen-
+tation results closer to the Ground Truth (top) and enables more confident and accurate object detection (bottom).
+
+
+and texture of key objects are faithfully restored and en-              by performing end-to-end learning on pairwise datasets (Za-
+hanced. The main contributions of this paper can be sum-                mir et al. 2020). Learning methods have achieved remark-
+marized as follows:                                                     able success on traditional image quality metrics (Yang et al.
+                                                                        2023; Ju et al. 2025).
+ • We propose a VLM-driven, semantic-sensitive learning
+   strategy to address the semantic blindness of traditional            Image Enhancement for Downstream Tasks
+   UIE, aiming to produce results that are robust for both
+   human and machine perception.                                        With the evolution of UIE technology, the academic com-
+                                                                        munity has increasingly recognized the discrepancy between
+ • We design a dual-guidance mechanism to operational-                  enhancement goals centered on human vision and the re-
+   ize this strategy. The semantic map is used to simultane-            quirements of downstream machine vision tasks (Liu et al.
+   ously: structurally guide the network’s information flow             2023a). Directly applying SOTA UIE methods as a pre-
+   via a cross-attention injection module, and explicitly reg-          processing step for object detection or segmentation tasks
+   ularize its intermediate features via a new semantic align-          yields inconsistent performance improvements, sometimes
+   ment loss.                                                           even causing a decline (Zhou et al. 2023; Chen et al. 2020).
+ • Experimental validation demonstrates that our strategy               This ”enhancement paradox” has spurred a new research di-
+   not only improves perceptual quality but also boosts per-            rection: downstream-aware image enhancement. Research
+   formance on subsequent machine cognition tasks, prov-                in this area is still in its nascent stages. Early explorations
+   ing the effectiveness and adaptability of our strategy.              have primarily focused on joint training, where an enhance-
+                                                                        ment network and a downstream task network are opti-
+                     Related Work                                       mized simultaneously (Yu, Shi, and Han 2023; Kneubuehler
+                                                                        et al. 2020). Although this approach enhances task rele-
+In this section, we review prior image enhancement in three             vance, it typically requires customizing the model for a spe-
+main areas: UIE techniques, downstream-aware image en-                  cific downstream task, thus lacking flexibility and generality.
+hancement, and existing semantic-guided enhancement.                    Other works have attempted to design new loss functions
+                                                                        aimed at preserving more features beneficial to downstream
+Underwater Image Enhancement Techniques                                 tasks during training (Liu et al. 2019a; Huang et al. 2023).
+UIE aims to correct image degradation caused by absorption              These efforts collectively point in a clear direction: for en-
+and scattering of water bodies. Early methods are mainly                hancement to be genuinely beneficial to downstream tasks,
+based on physical models. These methods recover clear im-               the process must transcend the pixel level and incorporate
+ages by inversely modeling the physical process of under-               higher-dimensional information.
+water imaging (Soni and Kumare 2020; Wang et al. 2019).
+However, due to the diversity and complexity of the under-              Semantic-guided Image Enhancement
+water environment, the physical prior assumptions of these              Leveraging semantic information to guide image enhance-
+methods are prone to lead to color distortion or noise ampli-           ment is becoming a popular strategy. Liao et al. (Liao et al.
+fication. In recent years, learning-based convolutional neural          2020) used semantic segmentation maps to iteratively refine
+network (CNN) methods have become the mainstream in the                 structural priors. Yan et al. (Yan et al. 2019) utilized seman-
+field of UIE. These methods demonstrate powerful degrada-               tic segmentation to guide pixel fusion by assigning scaling
+tion feature extraction and image reconstruction capabilities           factors to different regions. However, these methods rely
+
+
+                                                                 3760
+heavily on high-quality, pixel-level annotated data to train
+the segmentation models. Such data is particularly scarce
+in underwater scenarios, which can lead to the introduction
+of erroneous semantic priors that misguide the enhancement
+process.
+   With the rise of VLMs, researchers have begun to ex-
+ploit their powerful open-world understanding capabilities
+to guide image restoration (Zhou et al. 2025; Huang, Yang,
+and Guibas 2024; Wang et al. 2023). In the UIE domain,
+Liu et al. (Liu et al. 2024) employed the CLIP model as a
+discriminator, using global text prompts to guide a genera-              Figure 2: Overview of our semantic-sensitive learning strat-
+tive model for image recovery. While this approach cleverly              egy. A VLM-generated guidance map steers the UIE net-
+utilizes the cross-modal capabilities of VLMs, its guidance              work via a dual-guidance approach: cross-attention and ex-
+mechanism remains fundamentally global and style-driven.                 plicit supervision via an alignment loss.
+It does not concern itself with the specific objects present
+within the image and is therefore incapable of performing
+fine-grained, content-specific processing.                               formation with a thresholding operation:
+                                                                                                                                 γ
+                                                                               s′i = Ψsharp (si ; γ, δ) = (max(0, N (si ) − δ)) ,      (1)
+                      Methodology
+                                                                         where N (·) denotes min-max normalization to the range
+In this section, we introduce our strategy to empower UIE
+                                                                         [0, 1], δ is a threshold to filter out low-relevance noise re-
+networks with semantic sensitivity, as shown in Fig. 2. We
+                                                                         sponses, and γ > 1 is the power-law coefficient used to
+begin by defining the generation of a guidance map from
+                                                                         non-linearly expand the score gap to focus attention. Finally,
+VLM-derived text, creating an object-centric prior. We then
+                                                                         we reshape the 1D score sequence S ′ = {s′1 , . . . , s′N } and
+elaborate on dual-guidance strategy: a cross-attention mod-
+                                                                         upsample it to the original image dimensions via interpo-
+ule provides architectural guidance, while a semantic align-
+                                                                         lation, yielding the final single-channel semantic guidance
+ment loss enforces feature-level supervision.
+                                                                         map Msem .
+Generation of the Semantic Guidance Map                                  Semantically-Guided Image Reconstruction
+To overcome the ”task-agnostic” nature of UIE models, the                With the guidance map generated, the next step is to inte-
+network must first be made aware of what to focus on. We                 grate it into the UIE network. We propose a synergistic ap-
+leverage VLMs to generate a reliable semantic prior that                 proach that combines structural guidance and explicit super-
+is specific to the content of each image, avoiding the need              vision to inject the semantic map into the decoder. Inject-
+for scarce, densely annotated data required by traditional se-           ing semantic guidance here directly influences the decoding
+mantic segmentation. We first generate a semantic guidance               and reconstruction process, ensuring that as details are being
+map, denoted as Msem ∈ RH×W , for each degraded under-                   rebuilt, priority is given to semantically important regions.
+water image Id ∈ RH×W ×3 . This map is designed to pre-                  This allows the semantic prior to be robustly and effectively
+cisely quantify the semantic relevance between each spatial              utilized throughout the entire reconstruction process.
+location in the image and the key objects of interest.
+                                                                         Cross Attention Injection Mechanism We inject seman-
+Cross-Modal Feature Alignment Given the input image                      tic information into the UIE network’s decoder via cross at-
+Id and its corresponding textual description T generated by              tention, allowing it to take effect at various decoding stages
+a VLM (adopting LLaVA (Liu et al. 2023b)), we leverage                   l. At stage l, the decoder feature dl acts as the query Ql by
+the visual encoder Φv and text encoder Φt of a pre-trained               the linear projection to attend to the skip-connection feature
+vision-language alignment model (adopting BLIP (Li et al.                el from the encoder, which has been modulated by Msem .
+2022)) to extract features. Φv encodes Id into a set of patch            Specifically, Msem is downsampled to the same spatial reso-
+features Fv = {fv1 , fv2 , . . . , fvN } ∈ RN ×C , while Φt en-          lution as el , yielding M̃ (l) . This map is then used to element-
+codes T into a global textual feature vector ft ∈ RC . After             wise weight el , which is then linearly projected to generate
+their respective projection layers and normalization, we ob-             the key Kl and value Vl . Based on this, the decoder can pref-
+tain unit feature vectors v̂i and t̂.                                    erentially extract information from the semantically ”illumi-
+                                                                         nated” encoder features:
+Semantic Similarity Calculation and Sharpening We
+                                                                                                               Ql K ⊤
+                                                                                                                     
+compute the initial semantic relevance scores si = v̂i⊤ t̂ by                               d′l = softmax √ l           Vl .            (2)
+taking the cosine similarity between each patch feature and                                                       dk
+the text feature. However, the raw similarity distribution can             This design empowers the network with semantic-
+be too smooth to provide definitive guidance for the model               sensitivity and provides structural guidance.
+(Zhao et al. 2024). To accentuate high-relevance regions and
+suppress irrelevant background, we design a semantic sharp-              Explicit Semantic Alignment Loss While cross-attention
+ening function, Ψsharp , which combines a power-law trans-               provides structural guidance, its effect is implicit. To provide
+
+
+                                                                  3761
+                                                 UIEB                                           U45                           Challenge60
+         Methods
+                            PSNR↑               SSIM↑             LPIPS↓           UIQM↑               UCIQE↑          UIQM↑            UCIQE↑
+           PUIE              21.05               0.869             0.117           3.187                 0.388           2.686            0.376
+          PUIE-SS          23.20(+2.15)       0.884(+0.015)     0.092(-0.025)   3.210(+0.023)         0.392(+0.004)   2.705(+0.019)    0.379(+0.004)
+          SMDR               22.44               0.899             0.106           3.108                 0.422           2.727            0.415
+         SMDR-SS           23.28(+0.84)       0.909(+0.010)     0.099(-0.007)   3.139(+0.031)         0.436(+0.014)   2.852(+0.125)    0.433(+0.018)
+           UIR               22.89               0.885             0.124           2.874                 0.374           2.458            0.371
+          UIR-SS           24.62(+1.73)       0.901(+0.016)     0.113(-0.011)   3.016(+0.142)         0.378(+0.004)   2.659(+0.201)    0.386(+0.015)
+         PFormer             23.53               0.877             0.113           3.105                 0.437           2.426            0.426
+        PFormer-SS         24.97(+1.44)       0.933(+0.056)     0.087(-0.026)   3.126(+0.021)         0.449(+0.012)   2.456(+0.030)    0.437(+0.011)
+          FDCE               23.66               0.909             0.111           3.258                 0.434           3.015            0.418
+         FDCE-SS           24.63(+0.97)       0.927(+0.018)     0.093(-0.018)   3.267(+0.009)         0.436(+0.002)   3.079(+0.064)    0.421(+0.003)
+
+Table 1: Quantitative comparison of various UIE methods on the UIEB, U45, and Challenge60 datasets. -SS denotes empow-
+ering the baseline model with our proposed semantic-sensitive mechanism. Bold indicates the best performance among all
+methods, while Red values show the performance gain achieved by our mechanism.
+
+
+
+
+Figure 3: Visual comparison of enhancement results. Our -SS models produce images with better color fidelity and sharper
+details on key objects on the UIEB dataset (top). In challenging U45 scenes (bottom), our method effectively restores natural
+colors while avoiding artifacts introduced by baseline models.
+
+
+a more direct and measurable supervisory signal, we intro-                         non-key regions (defined by the mask 1− M̃ (l) ) by minimiz-
+duce an explicit semantic alignment loss, denoted as Lalign .                      ing the energy of the feature map F(l) , thereby suppressing
+It ensures the network is not just structurally guided but is                      background noise. For the foreground enhancement term, it
+also explicitly penalized for producing feature representa-                        rewards the network for producing strong responses in key
+tions that deviate from the semantic prior. Lalign operates                        object regions that are consistent with the semantic guidance
+directly on the intermediate feature maps of the decoder,                          by maximizing the correlation between F(l) and M̃ (l) .
+forcing their spatial distribution to align with the semantic
+guidance map.                                                                      Overall Training Objective
+   For the feature map F(l) produced at stage l of the de-
+                       (l)                                                         To produce a final result that is both visually pleasing and
+coder, our proposed Lalign is composed of two terms:
+                                                                                   semantically sound, the training objective must balance low-
+  (l)                                                                              level pixel fidelity, high-level perceptual quality, and our
+Lalign (F(l) , M̃ (l) ) = ∥F(l) ⊙ (1 − M̃ (l) )∥2F − η⟨F(l) , M̃ (l) ⟩,
+                          |         {z           } |      {z        }              proposed semantic alignment.
+                                 Background                   Foreground              The final objective function, Ltotal , is a weighted sum of a
+                                                          (3)                      reconstruction loss, Lrecon , and our proposed semantic align-
+where ∥·∥2F is the squared Frobenius norm, ⟨·, ·⟩ denotes the                      ment loss, Lalign :
+inner product, and η is a hyperparameter balancing the two                                                                X (l)
+terms. For background suppression, this term penalizes the                                       Ltotal = Lrecon + λalign       Lalign ,        (4)
+network for producing unnecessarily strong activations in                                                                        l∈L
+
+
+                                                                            3762
+                                 Object detection                                                  Semantic Segmentation
+  Methods
+               Plastic-AP↑     Bio-AP↑          Rov-AP↑    mAP↑              RO↑            RI↑        FV↑          WR↑          HD↑        mIoU↑
+  Original        98.00          94.95        93.33        95.43         45.68        79.31        66.44        73.11        75.97        68.10
+    PUIE          97.90          95.25        93.07        95.40         33.31        80.04        68.61        78.55        70.49        66.20
+ PUIE-SS        97.84(-0.06)   97.13(+1.88) 93.86(+0.79) 96.28(+0.88) 38.84(+5.53) 82.36(+2.32) 75.33(+6.72) 81.31(+2.76) 76.15(+5.66) 70.80(+4.60)
+    UIR           96.49          92.43        94.22        94.37         34.54        82.97        74.78        79.19        71.08        68.52
+  UIR-SS        97.22(+0.73)   93.96(+1.53) 94.77(+0.55) 95.31(+0.94) 42.03(+7.49) 84.78(+1.81) 74.91(+0.12) 79.06(-0.13) 71.49(+0.41) 70.45(+1.93)
+  PFormer         98.20          96.29        94.97        95.50         36.23        83.83        75.58        80.90        70.12        69.34
+PFormer-SS      98.48(+0.28)   96.99(+0.70) 95.15(+0.18) 96.87(+1.37) 51.52(+15.29) 83.34(-0.49) 77.64(+2.06) 83.43(+2.53) 77.80(+7.67) 74.75(+5.41)
+   SMDR           98.39          97.25        94.61        95.76         34.78        78.66        73.08        79.47        74.92        68.18
+ SMDR-SS        98.59(+0.20)   98.59(+1.34) 95.01(+0.40) 96.98(+1.22) 49.94(+15.17) 83.48(+4.82) 76.99(+3.91) 81.55(+2.09) 75.58(+0.67) 73.51(+5.33)
+   FDCE           98.17          94.55        94.44        95.72         36.24        82.81        76.11        80.96        72.80        69.78
+ FDCE-SS        98.50(+0.33)   97.27(+2.72) 95.27(+0.83) 97.01(+1.29) 46.71(+10.47) 82.54(-0.27) 75.65(-0.46) 81.73(+0.78) 75.17(+2.37) 72.36(+2.58)
+
+Table 2: Quantitative evaluation on downstream tasks, comparing UIE baselines with and without our -SS strategy. The tasks
+include object detection, and semantic segmentation. Red denotes improvement over the baseline, while Green indicates a
+decline.
+
+                                                               Missing Bio           Missing Bio      Missing Bio      Missing Bio       Missing Bio
+ Water body                       Missing Bio
+
+                                                             PUIE                  SMDR            PFormer           UIR               FDCE
+                                                              ALL Detected          ALL Detected    ALL Detected      ALL Detected      ALL Detected
+
+
+
+                                                             PUIE-SS               SMDR-SS          PFormer-SS       UIR-SS            FDCE-SS
+                                                               Missing Bio          ALL Detected      Missing Bio      Missing Bio      ALL Detected
+
+
+
+                                                             PUIE                  SMDR            PFormer           UIR               FDCE
+                                      ALL Detected            ALL Detected          ALL Detected    ALL Detected      ALL Detected      ALL Detected
+
+
+  Seabed                                                     PUIE-SS               SMDR-SS          PFormer-SS       UIR-SS            FDCE-SS
+
+
+Figure 4: Visual comparison on the object detection task. Our -SS enhancement significantly improves the detection of small,
+low-contrast objects in both murky water body (top) and complex seabed (bottom) environments, effectively mitigating the
+missed detection issue prevalent in baseline methods.
+
+
+where l represents the set of decoder stages where the se-                     an enhancement that is visually superior and more robust
+mantic alignment loss is applied, and λalign is a key hyperpa-                 for both human and machine perception.
+rameter that balances the two loss terms and we empirically
+set λalign to 0.1.                                                                                         Experiments
+   The reconstruction loss, Lrecon , is itself a composite of
+a L1 loss and a perceptual loss, Lpercep . While the L1 loss                   In this section, we conduct comprehensive experiments to
+ensures basic pixel fidelity, the perceptual loss guarantees                   validate the effectiveness of our strategy. We present our
+structural and textural similarity by comparing the enhanced                   experimental setup (datasets, metrics, implementation), fol-
+and reference images in the feature space of the pre-trained                   lowed by extensive quantitative and qualitative comparisons
+VGG-19 network (Simonyan and Zisserman 2014):                                  on both perceptual quality and downstream vision tasks. Fi-
+                                 X                                             nally, ablation studies analyze the contributions of proposed
+ Lrecon = ∥Ie − Igt ∥1 + λpercep     ∥ϕj (Ie ) − ϕj (Igt )∥1 , (5)             strategy.
+                                     j
+
+where ϕj denotes the feature extractor from the j-th con-                      Datasets and Evaluation Metrics
+volutional layer of the VGG-19, and λpercep is its weight.                     Datasets for UIE Tasks. To train and evaluate our mod-
+By optimizing this objective, the empowered network learns                     els, we utilize a combination of standard UIE benchmarks.
+to restore accurate pixel values while preserving perceptual                   We use the UIEB dataset (Li et al. 2019) for supervised
+features and ensuring its internal representations align with                  training, leveraging its training set of 790 paired images.
+the semantic prior. This holistic training strategy results in                 For full-reference evaluation, we test on its official test set
+
+
+                                                                       3763
+                             Dark                Input               PUIE               SMDR          PFormer              UIR              FDCE
+
+
+
+
+                                                                                                                                                   BW
+                                                                                                                                                   HD
+                                                  GT               PUIE-SS           SMDR-SS       PFormer-SS            UIR-SS          FDCE-SS
+
+
+
+
+                                                                                                                                                   WR
+                                                                                                                                                   RO
+                                        Input            PUIE                 SMDR             PFormer          UIR               FDCE
+
+
+
+
+                                                                                                                                                   RI
+  Light
+
+
+
+
+                                                                                                                                                   FV
+                                        GT               PUIE-SS              SMDR-SS          PFormer-SS       UIR-SS            FDCE-SS
+
+
+Figure 5: Visual comparison on the semantic segmentation task. Our semantic-sensitive enhancement preserves object bound-
+aries and reduces background confusion in both dark (top row) and light (bottom row) scenes, leading to more accurate seg-
+mentation masks compared to baseline methods.
+
+
+of 100 paired images. To assess the generalization capabil-                  and obtain their official weights. Subsequently, we integrate
+ity and enhancement quality in real-world scenarios without                  our semantic-sensitive mechanism into each of these mod-
+ground-truth, we test the models trained on UIEB on two ad-                  els. We then retrain these empowered models, denoted with
+ditional no-reference datasets: U45 (Li, Li, and Wang 2019)                  the suffix -SS (for Semantic-Sensitive), on the same UIEB
+and Challenge60 (Li et al. 2019).                                            dataset. All original and -SS models are then evaluated on
+                                                                             the test sets of UIEB, U45, and Challenge60.
+Datasets for Downstream Vision Tasks. To validate that
+our enhancement produces semantically robust images that                     Evaluation on Downstream Tasks. For downstream task
+are more conducive to machine understanding, we evalu-                       evaluation, we use pre-trained weights of both the origi-
+ate its impact on two distinct downstream tasks using their                  nal baseline models and our -SS variants as image pre-
+benchmark datasets: Trash-ICRA19 dataset (Fulton et al.                      processors. For each task, the input images from the respec-
+2019) for object detection, SUIM dataset (Islam et al. 2020)                 tive test set are first enhanced by five original and five -SS
+for semantic segmentation.                                                   models. The resulting enhanced images are then fed into a
+Evaluation Metrics. Our evaluation protocol is compre-                       unified downstream network for evaluation. This rigid setup
+hensive, covering both perceptual quality and downstream                     ensures that any observed performance difference is strictly
+task performance. For UIE tasks, we measure full-reference                   attributable to the intrinsic quality and semantic integrity of
+quality on the UIEB test set using the peak signal-to-                       the enhancement provided by the low-level model.
+noise ratio (PSNR), the structural similarity index measure
+(SSIM) and the learned perceptual image patch similarity                     Quantitative Evaluation
+(LPIPS) (Zhang et al. 2018). For no-reference evaluation
+on U45 and Challenge60, we employ the underwater image                       Performance on UIE Tasks. Table 1 presents the quanti-
+quality measure (UIQM) (Panetta, Gao, and Agaian 2015)                       tative results on the UIE datasets. For UIEB, our mechanism
+and the underwater color image quality evaluation (UCIQE)                    shows improvements in both PSNR and SSIM across all five
+(Yang and Sowmya 2015). For downstream vision tasks,                         baselines. This indicates that by focusing on semantically
+we report the average precision (AP) for three distinct cate-                important regions, our method can achieve higher fidelity in
+gories (Plastic, Bio, Rov) and the overall mean average pre-                 image reconstruction. For U45 and Challenge60, our method
+cision (mAP) for object detection; we report the intersection                also performs excellently on the UIQM and UCIQE metrics.
+over union (IoU) for five categories: Robots (RO), Reefs and                 Although there are fluctuations, the overall trend is positive.
+invertebrate (RI), Fish and vertebrates (FV), Wrecks or ruins                This demonstrates that the semantic-guided approach does
+(WR), Human divers (HD) and the overall mean intersection                    not overfit to a specific data distribution and can maintain
+over union (mIoU) for semantic segmentation.                                 better color balance and clarity in challenging scenes.
+
+Implementation Details                                                       Performance on Downstream Tasks. Table 2 summa-
+Our semantic-sensitive mechanism is designed to be a versa-                  rizes the evaluation results on downstream vision tasks.
+tile and pluggable module that can be integrated into various                The consistent outperformance of our empowered versions
+UIE architectures. To demonstrate its broad applicability, we                serves as strong evidence that our strategy produces images
+select five recent, SOTA UIE models that feature an encoder-                 with more robust features for machine analysis. Notably,
+decoder structure as baselines: PUIE (Fu et al. 2022), SMDR                  while some baselines struggle to outperform the Original
+(Zhang et al. 2024), UIR (Guo et al. 2025), PFormer (Khan                    unenhanced images, our method consistently delivers signif-
+et al. 2025), and FDCE (Cheng et al. 2025).                                  icant gains over both. The improvement is particularly pro-
+                                                                             nounced in semantic segmentation, where our method pro-
+Training for UIE Task. For our primary enhancement ex-                       vides cleaner object structures for pixel-level classification,
+periments, we first train these five baseline models on the                  and also consistent in object detection, making targets more
+UIEB training set to establish their original performance                    identifiable.
+
+
+                                                                   3764
+Figure 6: Visual comparison of guidance maps from differ-               Figure 7: Visual comparison of the semantic guidance injec-
+ent models.                                                             tion stage.
+
+
+Qualitative Analysis                                                    proaches: a standard Vision Transformer (ViT) using class
+                                                                        attention, CLIP, and BLIP. The class-based attention of the
+Comparisons on UIE Tasks. Fig. 3 presents a visual com-
+                                                                        ViT produces coarse and diffuse heatmaps, failing to pre-
+parison of the enhancement results on the UIEB and U45
+                                                                        cisely localize objects or disentangle concepts like ”fish”
+datasets. For UIEB, while all baseline methods improve the
+                                                                        and ”seaweed.” While contrastive learning endows CLIP
+overall brightness and color, they exhibit suboptimal perfor-
+                                                                        with sharper attention, it also induces noise-prone spuri-
+mance in preserving the fine details of the key object (the
+                                                                        ous activations in background regions. In stark contrast,
+fish). PUIE and UIR tend to result in over-saturated colors,
+                                                                        BLIP’s fusion-based alignment strategy yields superior re-
+whereas SMDR and PFormer sometimes flatten the textures.
+                                                                        sults. It generates clean, sharply-defined, and spatially ac-
+For U45, the original images suffer from severe color cast
+                                                                        curate maps that correctly highlight the objects described in
+and low visibility. The baseline methods either fail to suffi-
+                                                                        the text prompt with minimal noise. This high-fidelity spatial
+ciently remove the greenish color cast or introduce unnatu-
+                                                                        guidance is crucial for the effectiveness of our subsequent
+ral artifacts. In contrast, our empowered models focus their
+                                                                        enhancement stages, validating our selection of BLIP.
+restoration capabilities on semantically salient regions. Con-
+sequently, they exhibit sharper details, more natural color             Analysis of Semantic Guidance Injection Stage. To val-
+transitions, and a clearer separation from the background,              idate our strategy of injecting guidance into the decoder,
+consistently producing results that are more visually pleas-            we ablate three configurations: injecting into the Encoder
+ing. confirms that our enhancement strategy makes it easier             only, All stages, or the Decoder only. As shown in Fig. 7,
+for downstream models to identify and locate key targets.               our decoder-only approach is demonstrably superior. Qual-
+Comparisons on Downstream Tasks. Fig. 4 and Fig.                        itatively, it produces the most visually pleasing result with
+5 visually demonstrate the performance improvements on                  vibrant colors and sharp object details. Quantitatively, it
+various downstream tasks. Fig. 4 presents a marine de-                  achieves the highest scores across all metrics, including per-
+bris detection scenario featuring small, low-contrast objects           ceptual quality and machine cognition. This confirms our
+against a complex seabed background. When using the orig-               hypothesis that injecting semantic guidance during the de-
+inal baseline enhancer, the detection model frequently fails.           coder’s reconstruction process is the most effective strategy,
+However, after applying our semantic-sensitive mechanism,               as it directly steers image formation, whereas injecting it
+the same object is successfully detected in all cases. This             during the encoder’s feature extraction stage is less effective
+indicates that the empowered model provides targeted local              and can even be counter-productive.
+contrast enhancement that is sufficient to identify previously
+missed objects. Fig. 5 illustrates the impact on semantic seg-                                 Conclusion
+mentation. In the dark scene, both PUIE-SS and SMDR-SS                  This paper addresses the semantic blindness of traditional
+models yield superior segmentation results by effectively en-           UIE methods, a core limitation that hinders their perfor-
+hancing the contrast between the dolphin and the dark body              mance in both human perception and machine cognition.
+of water. Conversely, in the bright scene, baseline methods             We propose a novel semantic-sensitive learning strategy that
+tend to over-enhance the entire scene, which leads to mis-              empowers UIE models with content-aware capabilities. Our
+segmentation errors. In contrast, our empowered models, by              strategy first leverages a VLM to generate a spatial seman-
+selectively enhancing the target, maintain a clear distinction          tic guidance map. It then steers the enhancement process
+between the foreground object and the background.                       through a dual-guidance mechanism, which synergistically
+                                                                        combines a cross-attention module for structural guidance
+Ablation Study                                                          and an explicit semantic alignment loss for feature-level su-
+Analysis of Text-Image Alignment for Semantic Guid-                     pervision. Extensive experiments demonstrate that our strat-
+ance. To justify our choice of model for generating the                 egy is both effective and adaptable. When applied to various
+semantic guidance map, a critical precursor in our strat-               UIE baselines, it produces visually superior results and sig-
+egy. As shown in Fig. 6, we compare guidance maps gen-                  nificantly boosts performance on subsequent detection and
+erated by three different vision-language alignment ap-                 segmentation tasks.
+
+
+                                                                 3765
+                  Acknowledgments                                       Khan, M. R.; Negi, A.; Kulkarni, A.; Phutke, S. S.; Vip-
+                                                                        parthi, S. K.; and Murala, S. 2025. Phaseformer: Phase-
+This work is supported by the National Natural Sci-
+                                                                        based attention mechanism for underwater image restoration
+ence Foundation of China under grant Nos. U24A20219,
+                                                                        and beyond. In 2025 IEEE/CVF Winter Conference on Ap-
+62272281, 62576193, 62202268, and 62301105; special
+                                                                        plications of Computer Vision, 9618–9629. IEEE.
+funds of Taishan Scholars Project of Shandong Province un-
+der grant Nos. tsqn202306274 and tsqn202507240; Natural                 Kneubuehler, D.; Gu, S.; Van Gool, L.; and Timofte, R.
+Science Foundation of Shandong Province under grant Nos.                2020. Flexible example-based image enhancement with task
+ZR2025QC712, ZR2025QC695 and ZR2025MS985.                               adaptive global feature self-guided network. In European
+                                                                        Conference on Computer Vision, 343–358. Springer.
+                       References                                       Li, C.; Guo, C.; Ren, W.; Cong, R.; Hou, J.; Kwong, S.; and
+                                                                        Tao, D. 2019. An underwater image enhancement bench-
+Chen, L.; Jiang, Z.; Tong, L.; Liu, Z.; Zhao, A.; Zhang, Q.;            mark dataset and beyond. IEEE Transactions on Image Pro-
+Dong, J.; and Zhou, H. 2020. Perceptual underwater image                cessing, 4376–4389.
+enhancement with deep learning and physical priors. IEEE
+Transactions on Circuits and Systems for Video Technology,              Li, H.; Li, J.; and Wang, W. 2019. A fusion adversarial
+3078–3092.                                                              underwater image enhancement network with a public test
+                                                                        dataset. arXiv preprint arXiv:1906.06819.
+Cheng, Z.; Fan, G.; Zhou, J.; Gan, M.; and Chen, C. P.
+                                                                        Li, J.; Li, D.; Xiong, C.; and Hoi, S. 2022. Blip: Boot-
+2025. FDCE-Net: underwater image enhancement with em-
+                                                                        strapping language-image pre-training for unified vision-
+bedding frequency and dual color encoder. IEEE Transac-
+                                                                        language understanding and generation. In International
+tions on Circuits and Systems for Video Technology, 1728–
+                                                                        Conference on Machine Learning, 12888–12900. PMLR.
+1744.
+                                                                        Liao, L.; Xiao, J.; Wang, Z.; Lin, C.-W.; and Satoh, S. 2020.
+Fu, Z.; Wang, W.; Huang, Y.; Ding, X.; and Ma, K.-K. 2022.              Guidance and evaluation: Semantic-aware image inpainting
+Uncertainty inspired underwater image enhancement. In Eu-               for mixed scenes. In European Conference on Computer
+ropean Conference on Computer Vision, 465–482. Springer.                Vision, 683–700. Springer.
+Fulton, M.; Hong, J.; Islam, M. J.; and Sattar, J. 2019.                Liu, H.; Jin, F.; Zeng, H.; Pu, H.; and Fan, B. 2023a. Image
+Robotic detection of marine litter using deep visual detec-             enhancement guided object detection in visually degraded
+tion models. In 2019 International Conference on Robotics               scenes. IEEE Transactions on Neural Networks and Learn-
+and Automation, 5752–5758. IEEE.                                        ing Systems, 14164–14177.
+González-Sabbagh, S. P.; and Robles-Kelly, A. 2023. A sur-             Liu, H.; Li, C.; Wu, Q.; and Lee, Y. J. 2023b. Visual in-
+vey on underwater computer vision. ACM Computing Sur-                   struction tuning. Advances in Neural Information Process-
+veys, 1–39.                                                             ing Systems, 36: 34892–34916.
+Guo, X.; Dong, Y.; Chen, X.; Chen, W.; Li, Z.; Zheng, F.;               Liu, P.; Wang, G.; Qi, H.; Zhang, C.; Zheng, H.; and Yu, Z.
+and Pun, C.-M. 2025. Underwater image restoration via                   2019a. Underwater image enhancement with a deep residual
+polymorphic large kernel cnns. In ICASSP 2025-2025 IEEE                 framework. IEEE Access, 94614–94629.
+International Conference on Acoustics, Speech and Signal                Liu, R.; Hou, M.; Liu, J.; Fan, X.; and Luo, Z. 2019b. Com-
+Processing, 1–5. IEEE.                                                  pounded layer-prior unrolling: A unified transmission-based
+Huang, I.; Yang, G.; and Guibas, L. 2024. Blenderalchemy:               image enhancement framework. In 2019 IEEE International
+Editing 3d graphics with vision-language models. In Euro-               Conference on Multimedia and Expo, 538–543. IEEE.
+pean Conference on Computer Vision, 297–314. Springer.                  Liu, S.; Li, K.; Ding, Y.; and Qi, Q. 2024. Underwater im-
+Huang, Y.; Yuan, F.; Xiao, F.; Lu, J.; and Cheng, E. 2023.              age enhancement by diffusion model with customized clip-
+Underwater image enhancement based on zero-reference                    classifier. arXiv preprint arXiv:2405.16214.
+deep network. IEEE Journal of Oceanic Engineering, 903–                 Panetta, K.; Gao, C.; and Agaian, S. 2015. Human-visual-
+924.                                                                    system-inspired underwater image quality measures. IEEE
+Islam, M. J.; Edge, C.; Xiao, Y.; Luo, P.; Mehtaz, M.; Morse,           Journal of Oceanic Engineering, 541–551.
+C.; Enan, S. S.; and Sattar, J. 2020. Semantic segmentation             Pei, Y.; Huang, Y.; and Zhang, X. 2020. Consistency guided
+of underwater imagery: Dataset and benchmark. In 2020                   network for degraded image classification. IEEE Transac-
+IEEE/RSJ International Conference on Intelligent Robots                 tions on Circuits and Systems for Video Technology, 2231–
+and Systems, 1769–1776. IEEE.                                           2246.
+Jiang, Q.; Kang, Y.; Wang, Z.; Ren, W.; and Li, C.                      Simonyan, K.; and Zisserman, A. 2014. Very deep convo-
+2023. Perception-driven deep underwater image enhance-                  lutional networks for large-scale image recognition. arXiv
+ment without paired supervision. IEEE Transactions on                   preprint arXiv:1409.1556.
+Multimedia, 4884–4897.                                                  Soni, O. K.; and Kumare, J. S. 2020. A survey on underwater
+Ju, Y.; Xiao, J.; Zhang, C.; Xie, H.; Luo, A.; Zhou, H.; Dong,          images enhancement techniques. In 2020 IEEE 9th Interna-
+J.; and Kot, A. C. 2025. Towards marine snow removal with               tional Conference on Communication Systems and Network
+fusing Fourier information. Information Fusion, 102810.                 Technologies, 333–338. IEEE.
+
+
+                                                                 3766
+Tolie, H. F.; Ren, J.; and Elyan, E. 2024. DICAM: Deep in-              Proceedings of the IEEE/CVF Conference on Computer Vi-
+ception and channel-wise attention modules for underwater               sion and Pattern Recognition, 687–696.
+image enhancement. Neurocomputing, 127585.
+Wang, C.; Pan, J.; Wang, W.; Dong, J.; Wang, M.; Ju, Y.; and
+Chen, J. 2023. Promptrestorer: A prompting image restora-
+tion method with degradation perception. Advances in Neu-
+ral Information Processing Systems, 8898–8912.
+Wang, Y.; Song, W.; Fortino, G.; Qi, L.-Z.; Zhang, W.; and
+Liotta, A. 2019. An experimental-based review of image
+enhancement and image restoration methods for underwater
+imaging. IEEE Access, 140233–140251.
+Wu, Y.; Pan, C.; Wang, G.; Yang, Y.; Wei, J.; Li, C.; and
+Shen, H. T. 2023. Learning semantic-aware knowledge
+guidance for low-light image enhancement. In Proceedings
+of the IEEE/CVF Conference on Computer Vision and Pat-
+tern Recognition, 1662–1671.
+Yan, B.; Niu, X.; Bare, B.; and Tan, W. 2019. Semantic seg-
+mentation guided pixel fusion for image retargeting. IEEE
+Transactions on Multimedia, 676–687.
+Yang, M.; and Sowmya, A. 2015. An underwater color im-
+age quality evaluation metric. IEEE Transactions on Image
+Processing, 6062–6071.
+Yang, X.; Li, H.; Li, X.; and Li, T. 2023. HIFGAN: A high-
+frequency information-based generative adversarial network
+for image super-resolution. ACM Transactions on Multime-
+dia Computing, Communications and Applications, 1–19.
+Yu, N.; Shi, H.; and Han, Y. 2023. Joint correcting and re-
+finement for balanced low-light image enhancement. IEEE
+Transactions on Multimedia, 6310–6324.
+Zamir, S. W.; Arora, A.; Khan, S.; Hayat, M.; Khan, F. S.;
+Yang, M.-H.; and Shao, L. 2020. Learning enriched features
+for real image restoration and enhancement. In European
+Conference on Computer Vision, 492–511. Springer.
+Zhang, D.; Zhou, J.; Guo, C.; Zhang, W.; and Li, C. 2024.
+Synergistic multiscale detail refinement via intrinsic super-
+vision for underwater image enhancement. In Proceed-
+ings of the AAAI conference on Artificial Intelligence, 7033–
+7041.
+Zhang, R.; Isola, P.; Efros, A. A.; Shechtman, E.; and Wang,
+O. 2018. The unreasonable effectiveness of deep features as
+a perceptual metric. In Proceedings of the IEEE conference
+on computer vision and pattern recognition, 586–595.
+Zhao, C.; Wang, K.; Zeng, X.; Zhao, R.; and Chan, A. B.
+2024. Gradient-based visual explanation for transformer-
+based clip. In International Conference on Machine Learn-
+ing, 61072–61091. PMLR.
+Zhou, H.; Dong, W.; Liu, X.; Zhang, Y.; Zhai, G.; and Chen,
+J. 2025. Low-light image enhancement via generative per-
+ceptual priors. In Proceedings of the AAAI Conference on
+Artificial Intelligence, 10752–10760.
+Zhou, J.; Pang, L.; Zhang, D.; and Zhang, W. 2023. Under-
+water image enhancement method via multi-interval subhis-
+togram perspective equalization. IEEE Journal of Oceanic
+Engineering, 474–488.
+Zhu, X.; Pang, J.; Yang, C.; Shi, J.; and Lin, D. 2019. Adapt-
+ing object detectors via selective cross-domain alignment. In
+
+
+                                                                 3767
+

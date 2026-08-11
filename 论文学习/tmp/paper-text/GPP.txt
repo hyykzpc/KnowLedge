@@ -1,0 +1,799 @@
+                                  The Thirty-Ninth AAAI Conference on Artificial Intelligence (AAAI-25)
+
+
+
+
+              Low-Light Image Enhancement via Generative Perceptual Priors
+
+         Han Zhou1 * , Wei Dong1 * , Xiaohong Liu2† , Yulun Zhang2 , Guangtao Zhai2 , Jun Chen1
+                                                          1
+                                                McMaster University
+                                                     2
+                                            Shanghai Jiao Tong University
+              {zhouh115, dongw22, chenjun}@mcmaster.ca, {xiaohongliu, yulzhang, zhaiguangtao}@sjtu.edu.cn
+
+
+
+                            Abstract                                        learning approaches, which exploit the data fitting capability
+                                                                            of neural networks (Yan et al. 2016; Yang et al. 2020; Lore,
+  Although significant progress has been made in enhancing                  Adedotun, and Soumikm 2017), still suffer from poor adapt-
+  visibility, retrieving texture details, and mitigating noise in
+                                                                            ability in real-world scenarios. Image priors (i.e., edge) (Xu,
+  Low-Light (LL) images, the challenge persists in applying
+  current Low-Light Image Enhancement (LLIE) methods to                     Wang, and Lu 2023; Deepanshu, Lal, and Parihar 2021; Kim
+  real-world scenarios, primarily due to the diverse illumina-              et al. 2021; Zhu et al. 2020), semantic priors (Wu et al. 2023;
+  tion conditions encountered. Furthermore, the quest for gen-              Fan et al. 2020), and illumination maps (Wang et al. 2020)
+  erating enhancements that are visually realistic and attrac-              are commonly used for improving image quality. However,
+  tive remains an underexplored realm. In response to these                 their effectiveness in generating realistic details is limited
+  challenges, we introduce a novel LLIE framework with the                  due to the difficulty of predicting robust priors from severely
+  guidance of Generative Perceptual Priors (GPP-LLIE) de-                   degraded inputs. Semantic priors are also constrained by the
+  rived from vision-language models (VLMs). Specifically, we                reliance on predefined semantic categories, which affects
+  first propose a pipeline that guides VLMs to assess multiple              their ability to generalize in practical applications. Recent
+  visual attributes of the LL image and quantify the assess-
+                                                                            work (Luo et al. 2024) has attempted to fine-tune pre-trained
+  ment to output the global and local perceptual priors. Sub-
+  sequently, to incorporate these generative perceptual priors to           VLMs to align the content embedding for degraded images
+  benefit LLIE, we introduce a transformer-based backbone in                to that for clean images. Yet, fine-tuning VLMs on limited
+  the diffusion process, and develop a new layer normalization              data has a risk of over-fitting and demonstrates limited gen-
+  (GPP-LN) and an attention mechanism (LPP-Attn) guided                     eralizability on unseen data.
+  by global and local perceptual priors. Extensive experiments                 On the other hand, several recent generative LLIE ap-
+  demonstrate that our model outperforms current SOTA meth-                 proaches (Jiang et al. 2023a; Zhou et al. 2023a; He et al.
+  ods on paired LL datasets and exhibits superior generalization            2023; Yin et al. 2023) are proposed based on Diffusion
+  on real-world data.
+                                                                            Model (DM) (Ho, Jain, and Abbeel 2020; Dhariwal and
+                                                                            Nichol 2021), which demonstrates impressive capacity to
+Code — https://github.com/LowLevelAI/GPP-LLIE                               represent intricate distributions without succumbing to the
+                                                                            mode collapse and training instability often associated with
+                     1    Introduction                                      GANs. Despite the prevailing choice of convolutional U-Net
+                                                                            network as the de facto backbone, (Peebles and Xie 2023)
+Images captured in low-light conditions exhibit compro-                     indicates that the inductive biases inherent in U-Net may not
+mised quality, characterized by diminished visibility, re-                  be pivotal for the remarkable performance of diffusion mod-
+duced contrast, and loss of detail, which complicates both                  els and introduces the transformer-based diffusion model
+human observation and vision-based tasks (Huang et al.                      (DiT) with good scalability for image synthesis. However,
+2016; Dong, Zhou, and Xu 2018; Xu, Dong, and Zhou                           directly employing DiT for LLIE is unfeasible: (1) The orig-
+2022). Enhancing these images is particularly challenging                   inal DiT network is designed to output images with specific
+in real-world scenarios due to complex degradation caused                   resolutions, whereas LLIE models typically process images
+by diverse illumination levels and elevated noise intensities.              of varying sizes; (2) The computational complexity of the
+   Although substantial progress has been made for low-                     Vision Transformer in DiT scales quadratically with the in-
+light image enhancement (LLIE) (Zhou et al. 2024; Li et al.                 put size, which limits its applicability to high-resolution im-
+2023; Dong et al. 2024c), traditional methods, which rely                   ages; (3) Lacking prior information, the original DiT often
+on handcrafted descriptors(Fu et al. 2016; Jobsob, Zia-ur,                  demonstrates limited generalization to real-world images.
+and Woodell 1997; Shen and Gupta 2022) and existing deep
+                                                                               In view of the aforementioned challenges, we pro-
+   * These authors contributed equally.                                     pose a novel LLIE framework with the guidance of
+   †
+     Corresponding Author                                                   Generative Perceptual Priors (GPP-LLIE) derived from
+Copyright © 2025, Association for the Advancement of Artificial             vision-language models (VLMs). Firstly, we propose incor-
+Intelligence (www.aaai.org). All rights reserved.                           porating external perceptual priors to help LLIE model to
+
+
+                                                                    10752
+      Input            SNR-Net           LLFlow            LL-SKF                RQLLIE             Pydiff             Ours
+
+Figure 1: Visual comparisons on real-world datasets without Ground Truth. The images analyzed are sourced from MEF (Ma,
+Zeng, and Wang 2015) and NPE (Wang et al. 2013), respectively. Our method stands out by providing a balanced enhancement
+effect. Unlike other approaches, our method effectively enhances luminance, not only to reveal finer details but also preserve
+natural color tones. Notably, the cloud details in the sky, the structural integrity of the Eiffel Tower and the texture of flowers
+and branches are rendered with clarity and without over-exposure artifacts or unnatural coloration, distinctly surpassing others.
+
+
+comprehend the varying attributes in LL images, thereby                  our transformer block to benefit the enhancement process.
+guiding the enhancement process. Different from previous                    (4) Our method demonstrates SOTA performance on var-
+strategies that extract features from severely degraded im-              ious benchmark datasets and exhibits good generalization
+ages, we develop a novel pipeline as shown in Fig. 2 to                  on real-world data. Furthermore, our generative perceptual
+extract generative perceptual priors from VLMs, which are                priors are applicable to help other LLIE models achieve en-
+pre-trained on extensive datasets and exhibit proficiency                hanced outcomes.
+in perceiving visual low-level attributes on unseen images.
+Specifically, we develop instruction prompts to guide VLMs
+to assess multiple attributes (i.e., contrast, visibility, and                              2   Related Works
+sharpness) of LL images globally and locally. Then, these
+assessments are quantified into the global and local per-                Diffusion-Based LLIE Compared to common deep learn-
+ceptual priors via our proposed sigmoid-based quantifica-                ing architectures for image restoration (Liu et al. 2019, 2022;
+tion strategy. Secondly, we develop an efficient transformer-            Dong et al. 2024b; Zhou et al. 2023b; Dong et al. 2024a;
+based backbone with the guidance of generative perceptual                Ancuti et al. 2023, 2024; Vasluianu et al. 2024; Yin, Liu,
+priors in the diffusion process. Specifically, the global per-           and Liu 2019; Fu et al. 2024), due to its remarkable gen-
+ceptual prior is employed to modulate the layer normaliza-               erative capabilities, diffusion model (Ho, Jain, and Abbeel
+tion (GPP-LN) and the local perceptual prior is introduced               2020; Dhariwal and Nichol 2021) has emerged as a domi-
+to guide the attention mechanism (LPP-Attn). Experimen-                  nant force in recently proposed image-level generative mod-
+tal results attest to the effectiveness of our proposed net-             els, finding widespread applications in image synthesis (Pee-
+work across diverse real-world scenarios, yielding visually              bles and Xie 2023), inpainting (Rombach et al. 2022), and
+appealing and detail-rich enhancement results as shown in                super-resolution (Sun et al. 2024). Diffusion model is firstly
+Fig. 1 In addition, we also apply our generative perceptual              introduced for LLIE in Diff-Retinex (Yi et al. 2023) which
+priors to other LLIE models and enhanced results further                 employs two diffusion networks to reconstruct normal-light
+demonstrate the effectiveness of our proposed pipeline of ex-            illumination and reflectance maps to produce the final re-
+tracting generative perceptual priors from VLMs. We high-                sult. Then, Reti-Diff (He et al. 2023) proposes to utilize the
+light our contributions as follows:                                      diffusion process in the latent space to alleviate computa-
+   (1) We introduce an innovative pipeline to acquire gener-             tional costs and leverage a transformer network for detail
+ative perceptual priors for LL images globally and locally               refinement. CLEDiff (Yin et al. 2023) introduces a diffu-
+based on pre-trained VLMs.                                               sion network conditioned on brightness level. PyDiff (Zhou
+   (2) With the guidance of global and local generative per-             et al. 2023a) adopts a strategy that progressively increases
+ceptual priors, we develop an efficient transformer based dif-           the resolution in the reverse diffusion process. However, all
+fusion framework for LLIE (GPP-LLIE).                                    these methods utilize convolutional U-Nets architecture as
+   (3) We introduce global perceptual priors to modulate the             the backbone for diffusion model. The untapped potential of
+layer normalization (GPP-LN) and leverage local percep-                  Transformers, renowned for their scalability and effective-
+tual priors to guide the attention mechanism (LPP-Attn) in               ness, remains unexplored in diffusion-based LLIE methods.
+
+
+                                                                 10753
+                <At
+                  tibu
+                   r  t e:"
+                         > vis
+                             ibl
+                               it
+                                iy,"
+                                  " conr
+                                       tas
+                                         t","shrpn
+                                               a  ess,…
+                                                     "                  Predf
+                                                                            einedLowL
+                                                                                    -e v
+                                                                                       e i
+                                                                                        lV  lA
+                                                                                          sua ttibu
+                                                                                                r  e
+                                                                                                   ts
+                <Dein
+                   f iion
+                      t  >:{
+                    “i
+                     vs i
+                       ibl
+                         ity:
+                            ”theclr
+                                  at
+                                   iyanddisin
+                                           t ctne
+                                                sswithwh ichde
+                                                             tal
+                                                               iso  im
+                                                                  fan agec anbeseenandre gn
+                                                                                        co ied
+                                                                                            z .
+                    "contrs
+                          at"
+                            :thedif
+                                  feren
+                                      ceinluminanceorcolorthtm
+                                                            a  aksanob
+                                                                 e    e
+                                                                      jctdisin
+                                                                            t gush
+                                                                                i ab
+                                                                                   lefromothr
+                                                                                            eswith
+                                                                                                 inan a
+                                                                                                     img.
+                                                                                                        e
+                    "sharpnes
+                            s":thec
+                                  lai
+                                    rtyofdeti
+                                            landth
+                                            a      eedg edef
+                                                           in
+                                                            iion
+                                                             t  inanimag.
+                                                                        e
+                    .
+                    ...
+                      ..}
+            s
+           Inet
+              ran
+                img
+                  aeandse
+                        letth
+                          c eat
+                              tibu
+                               r teyouwi
+                                       shtoenh c
+                                              ane(mut
+                                                    lipl e
+                                                        esle
+                                                           cion
+                                                            t  spos
+                                                                  s l
+                                                                   ibe)
+                                   E   l
+                                    xampe:
+                                         Ine
+                                           srt<����>a ndsl
+                                                         eet“
+                                                           c conra
+                                                                t t
+                                                                  s”
+                  (aInpu
+                    )  t                                                (b
+                                                                         )Con
+                                                                            vesa
+                                                                              r ion
+                                                                                t
+                                                              E
+                                                              <valu
+                                                                  ationComm  >
+                                                                           and:
+                        a
+                        Ptch
+                           if
+                            y                 As s
+                                                sesglob
+                                                      al
+                                             andloclqu
+                                                   a  ai
+                                                       lty    a
+                                                              Rtethecontr
+                                                                        as fth
+                                                                          to      �>
+                                                                              e<��� rf
+                                                                                     eer
+                                                                                       rin    f
+                                                                                         gto<De i
+                                                                                               int
+                                                                                                 ion
+                                                                                                   >[con
+                                                                                                       trs
+                                                                                                         at]
+                                                               r<
+                                                              Fo eachp
+                                                                     atch>in<��� :
+                                                                                �>
+
+              <���                                            Rt
+                                                               aeth
+                                                                  econtrato
+                                                                         s f<a
+                                                                             echpt
+                                                                                 a   e
+                                                                                  ch>rfr
+                                                                                       ein
+                                                                                        r gto<De
+                                                                                               f i
+                                                                                                inion
+                                                                                                  t >[con
+                                                                                                        trs
+                                                                                                          at]
+                 �>                 �>
+                                 <���
+                                                                                           aw
+                                                                                           R  g
+                                                                                             loit
+                                                                                                so o
+                                                                                                  fTk s
+                                                                                                     en
+                                           )Quan
+                                          (d   tf
+                                                iied
+                                         s
+                                         Ass
+                                           esm
+                                             entRe l
+                                                  sut                           a
+                                                                                <se
+                                                                                  ss en
+                                                                                    sm >
+                                                                                       t     …         "
+                                                                                                   "good    "poo
+                                                                                                               r"     .
+                                                                                                                      ..
+                                                                  L
+                                                                  LaVA
+                                                                                <
+                                                                                s r
+                                                                                 coeto
+                                                                                    _ en
+                                                                                      k >    …      ����     ����     …
+                                               .5
+                                               3
+          Smooth            a
+                           Qul
+                             ityM
+                                ap            a
+                                           GloblS
+                                                coe
+                                                  r�                         i
+                                                                             S  id
+                                                                              gmo -ba
+                                                                                    sed
+          a
+         Qui
+           ltyMap                                                         Qu
+                                                                           ani
+                                                                             ti
+                                                                              fct
+                                                                                aionS
+                                                                                    trt
+                                                                                      aey
+                                                                                        g                  c
+                                                                                                           ()Quan
+                                                                                                                tf
+                                                                                                                 ica
+                                                                                                                  i ion
+                                                                                                                    t
+
+
+Figure 2: Our proposed pipeline for fine-grained generative perceptual priors extraction from pre-trained VLMs. (a) The
+input image is patchified into several non-overlapped patches. (b) Conversation with VLMs. We develop evaluation commands
+to guide VLMs to assess the image globally and locally regarding the selected attribute. (c) Based on the output of VLMs, we
+design the sigmoid-based quantification strategy. (d) Our extracted global and local generative priors.
+
+
+Image Restoration with Vision-Language Guidance                           to guide the reverse diffusion process (Sec. 3.3).
+Pre-trained with large-scale image-text datasets, vision-
+language models (i.e., CLIP (Radford et al. 2021)) demon-                 3.1    Motivation of Utilizing VLMs Guidance
+strate impressive zero-shot capability and have been applied
+to image restoration in recent years. For example, CLIP-                  Although recent methods in low-light image enhancement
+LIT (Liang et al. 2023) introduces learnable prompts for                  (LLIE) have shown improved performance, they often yield
+unsupervised backlit image enhancement. DACLIP (Luo                       unbalanced results with over-exposure artifacts when ap-
+et al. 2024) designs an additional image controller to sep-               plied to real-world images, which frequently differ in light-
+arate degradation and image features from the frozen CLIP                 ing conditions from the training datasets (see Fig. 1). These
+latent space for universal image restoration. These methods               results underscore a general inability of current LLIE meth-
+mainly concentrate on applying VLMs to generate captions                  ods to adaptively enhance images under varied illumination
+of image content. However, accurately describing the con-                 conditions. Thus, enabling models to autonomously per-
+tent of low-light, complex scene images presents a chal-                  ceive and adapt to various visual distortions is of vital impor-
+lenge. Instead, based on pre-trained VLMs, we propose an                  tance. Inspired by the recently demonstrated capabilities of
+innovative pipeline to extract generative perceptual priors re-           emergent Vision-Language Models (VLMs) in low-level vi-
+garding the low-level attributes of LL images. Moreover, we               sual perception and understanding (Wu et al. 2024), we aim
+incorporate these priors into our proposed transformer-based              to explore the potential of utilizing these perceptual abilities
+diffusion network to enhance the performance in LLIE.                     of VLMs to facilitate LLIE tasks.
+
+                       3    Method                                        3.2    Generative Perceptual Priors from VLMs
+The main focus of this work is to extract generative percep-              VLMs are usually trained with millions of text-image pairs
+tual priors that well represent visual attributes of LL images            and demonstrate remarkable zero-shot capabilities in gen-
+and to develop LLIE models guided by these priors to gener-               erating aligned understandings between texts and images.
+ate realistic and visually attractive enhancement results. The            Therefore, it is essentially promising to utilize the prior in-
+overall framework is illustrated in Fig. 3.                               formation inherent in VLMs to help LLIE models make
+   In this section, we first discuss the motivation of employ-            more appropriate decisions during the restoration process.
+ing guidance derived from vision language models (VLMs)                   However, the VLMs employed in recent image restoration
+for LLIE task (Sec. 3.1). Then, we propose an innovative                  works (Luo et al. 2024; Sun et al. 2024) are primarily fo-
+pipeline that guides VLMs to assess the visual attributes of              cused on understanding the semantic content of images, yet
+LL images globally and locally and then extract the per-                  they lack precise representation of visual details. Moreover,
+ceptual priors by introducing the sigmoid-based quantifica-               accurately describing the content of complex LL images is
+tion strategy (Sec. 3.2). Moreover, we develop a transformer              quite challenging. In contrast, the VLMs employed in our
+based diffusion framework and we incorporate these priors                 work is LLaVA (Liu et al. 2023a), which is further fine-tuned
+
+
+                                                                  10754
+                                                                                          C         �
+                                                                                                    ��
+                                                                                                               -LL
+                                                                                                             GPP  IE G ener
+                                                                                                                          ativeP er ceptu
+                                                                                                                                        alPr r
+                                                                                                                                            io
+                                                  (
+                                                  �  �
+                                                   ��|  )
+                                                      �−1                               GPP
+                                                                                          -LN                         GuidedT ran sform rfo
+                                                                                                                                        e  rLL IE
+                         ℰ                    …               …
+                                                                                                              GPP-LN Glob lP
+                                                                                                                          a  r
+                                                                                                                             ec eptu alPio
+                                                                                                                                        r r
+                                                                                         MSA                            id
+                                                                                                                       Gu edL ay erN  orm
+                                    0                                     �
+                                    �
+                                    ��                                    �
+                                                                          ��                                    -A
+                                                                                                              LPP ttn LocalP e
+                                                                                                                             rcep tualP io
+                                                                                                                                        r r
+           �
+           ��                                                                           GPP
+                                                                                          -LN                          GuidedAtt ention
+                                          a
+                                         Shrpne
+                                              ss                                           �                          ForwardD iffu s
+                                                                                                                                    ionP roces
+                                                                                                                                             s
+                     G e
+                      en t
+                        raie
+                           v                                                                     �
+                                                                                                 ,�      �
+                   P
+                   erc
+                     eptua
+                         lPrir
+                             os
+                                          Vis
+                                            ib
+                                             il
+                                              i
+                                            Con
+                                              t
+                                               t
+                                               r
+                                                y
+                                                as
+                                                 t       GPP IEN
+                                                           -LL etwo
+                                                                  rk�
+                                                                    �                     -A
+                                                                                        LPP t
+                                                                                            tn                        ReverseD eno is
+                                                                                                                                    ingP roces
+                                                                                                                                             s
+ e
+ Prc tu
+    ep a
+       lP io
+          r s
+            r                                                                                                       Add
+                                                                                                                      iion
+                                                                                                                       t        C   Coc
+                                                                                                                                      natent
+                                                                                                                                           aio
+                                                                                                                                             n
+                                                                                                                    F z
+                                                                                                                     roen           Tr
+                                                                                                                                     ainabe
+                                                                                                                                          l
+   Exra
+     t t
+       cion              G
+                         lobal                                -LL
+                                                            GPP  IE                       -LN
+                                                                                        GPP
+                         co
+                         S re�       a
+                                    Qul
+                                      ityM
+                                         ap�                  B
+                                                              lock                        FFN         �
+                                                                          ×�                                                 i
+                                                                                                                             Fna
+                                                                                                                               lRs
+                                                                                                                                 eut
+                                                                                                                                   l
+                                                            t−1 t
+                              �
+                              ��                           �
+                                                         ��(��|��,�
+                                                                � �
+                                                                  �,�
+                                                                    ,�)
+                          ℰ                          …                           …                             �
+                                                                                               0
+           �
+                                       �
+                                       �
+                                       ��
+                                                                                               �
+                                                                                               ��
+           ��                                                                                                                   �
+                                                                                                                                ���
+
+Figure 3: The overall framework of our proposed GPP-LLIE method. We first employ the encoder E to convert the NL image
+Inl and LL image Ill into latent space denoted as z0nl and zll . Then, the forward diffusion process is applied upon z0nl . In order to
+leverage the prior information to guide the reverse diffusion process, the Ill is sent to our proposed pipeline for perceptual priors
+extraction. With the guidance of global perceptual score S, local quality map M, and LL feature zll , we develop a transformer-
+based network ϵθ and gradually transform the randomly sampled Gaussian noise ẑTnl into a clear NL latent feature ẑ0nl . Finally,
+the restored feature ẑ0nl is fed into the decoder D to generate the final enhancement Îout .
+
+
+with 200K instruction-response pairs related to low-level vi-                To start with, we design our strategy based on tokens
+sual aspects in Q-instruct (Wu et al. 2024). In this paper, we            with contextual information rather than those with the high-
+introduce a new pipeline to employ LLaVA in LLIE: we de-                  est probability. Moreover, our strategy is designed based
+sign text prompts to guide LLaVA to assess multiple visual                on the probability of “good” and “poor”, which can be
+attributes of LL images. In addition, different from the tex-             considered as positive and negative assessments of the at-
+t/image embedding in previous methods (Sun et al. 2024;                   tributes of LL images. This strategy aligns more closely with
+Luo et al. 2024), we introduce the quantification strategy                human perceptual system, as assessments of images typi-
+to output the quantified global assessment and local quality              cally include both positive and negative evaluations. There-
+map as perceptual priors for LLIE. Our pipeline for percep-               fore, the quantified global score S is calculated as S =
+tual priors extraction is shown as Fig. 2.                                (1 + e−(Ppos −Pneg )/α )−1 , where a sigmoid operation modu-
+Fine-grained Low-Level Visual Assessment. Different                       lates the difference between the probabilities of “good” and
+from simply evaluating the overall quality of image, we offer             “poor” (denoted as Ppos and Pneg ), α is the modulation
+several low-level visual attributes <Attribute> for selection             scalar and is set as 3 in this work. Similarly, we calculate the
+and provide corresponding definitions <Definition> to help                score for each patch in <img1 > and then obtain the quality
+VLMs better understand the assessment task. Specifically,                 map M. Specific to LLIE task, three attributes (“contrast”,
+given an image <img0 >, we can select the attribute from                  “visibility”, and “sharpness”) are evaluated and the average
+<Attribute> for assessment. For example, as LLIE is to en-                global score and concatenated quality map are introduced as
+hance the contrast, visibility, and sharpness of LL images,               perceptual prior guidance in our proposed LLIE model.
+we can sequentially evaluate these attributes in LL inputs.
+   Besides the global assessment, considering the varying                 3.3   Generative Perceptual Prior Guided
+contrast, visibility, and sharpness within LL images, we                        Diffusion Transformer
+also propose to extract local assessment for fine-grained en-
+hancement. Specifically, the input <img0 > is patchified into             To achieve enhanced generalizability on unseen real-world
+several non-overlapped patches <img1 > and each patch is                  images, we build our LLIE model based on the Diffusion
+fed into LLaVA to acquire the local assessment. Therefore,                Transformer (DiT) network (Peebles and Xie 2023), which
+the overall evaluation command during the conversation is                 shares similar architecture with Vision Transformers (ViT)
+defined as the <Evaluation Command> in Fig. 2.                            and presents good scalability properties. However, the DiT
+Sigmoid-based Quantification Strategy. With the input                     is originally designed for image synthesis at specific res-
+image and evaluation command, we observe several issues                   olutions (i.e., 256 × 256 or 512 × 512) and the computa-
+in the probabilities of tokens generated by LLaVA: (1) To-                tional complexity of ViT is quadratic to the input size. Evi-
+kens (i.e., “The”) that have the highest probability are mean-            dently, the original DiT is infeasible for LLIE task, as LLIE
+ingless. (2) Compared to a single token, the difference be-               models usually process LL images with variable sizes and
+tween two opposite logits (i.e., “good” and “poor”) is more               sometimes large resolutions. To this end, we introduce a
+aligned with human perception. These observations motivate                transformer-based backbone in the diffusion process, which
+us to explore additional strategies to generate quantified out-           is suitable for LLIE and contains special designs for incor-
+put well-aligned with human opinions for LLIE.                            porating external generative perceptual priors.
+
+
+                                                                  10755
+                                                  LOL                              LOL-v2-real                         LOL-v2-syn
+            Methods
+                                   FID ↓   LPIPS↓ DISTS↓     PSNR↑     FID ↓    LPIPS↓ DISTS↓     PSNR↑    FID ↓   LPIPS↓ DISTS↓     PSNR↑
+   KinD (Zhang et al. 2019)        78.28    0.157    0.110    19.03    95.02     0.151   0.112     18.05   97.32    0.263    0.180    16.81
+  MIRNet (Zamir et al. 2020)       71.16    0.131    0.105    24.14    82.25     0.138   0.116     20.02   40.18    0.102    0.126    21.94
+   DRBN (Yang et al. 2020)         85.57    0.155    0.108    19.86    94.22     0.147   0.119     20.29   28.74    0.085    0.097    23.22
+   SNR-Net (Xu et al. 2022)        66.47    0.115    0.092    24.70    68.56     0.120   0.095     21.48   19.96    0.056    0.063    24.14
+ URetinex-Net (Wu et al. 2022)     85.59    0.121    0.096    21.33    76.74     0.144   0.107     21.16   33.25    0.075    0.087    24.73
+  LLFlow (Wang et al. 2022)        65.17    0.113    0.094    25.19    70.68     0.135   0.102     26.53   20.24    0.044    0.056    26.23
+  RQLLIE (Liu et al. 2023b)        53.32    0.121    0.086    25.24    68.89     0.142   0.102     22.37   16.96    0.044    0.053    25.94
+ Retinexformer (Cai et al. 2023)   72.38    0.131    0.106    25.16    79.58     0.171   0.115     22.80   22.78    0.059    0.066    25.67
+    CUE (Zheng et al. 2023)        69.83    0.224    0.141    21.86    67.05     0.133   0.112     21.19   31.33    0.076    0.083    24.41
+   CLEDiff (Yin et al. 2023)       86.94    0.164    0.108    25.51    82.27     0.183   0.118     22.68   18.58    0.064    0.080    27.38
+   LL-SKF (Wu et al. 2023)         59.47    0.105    0.084    26.80    57.84     0.111   0.084     28.45   21.58    0.040    0.063    29.11
+   Reti-Diff (He et al. 2023)      49.14    0.105    0.082    25.35    43.18     0.087   0.069     22.97   13.26    0.038    0.051    27.53
+   PyDiff (Zhou et al. 2023a)      48.28    0.099    0.079    27.09    44.27     0.094   0.072     28.77   15.69    0.040    0.055    29.27
+  DiffLL (Jiang et al. 2023b)      48.11    0.118    0.091    26.33    45.36     0.089   0.064     28.66   13.66    0.038    0.047    28.87
+             Ours                  36.73   0.081    0.063    27.51     26.78    0.055    0.047    29.23    9.74    0.031    0.039    30.17
+
+Table 1: Quantitative comparisons on LOL, LOL-v2-real, and LOL-v2-synthetic, our method achieves superior performance
+compared to current SOTA methods. These numbers are obtained either by using their released weights or by re-training their
+models. [Key: Best, Second Best, ↑ (↓): Larger (smaller) values leads to better performance]
+
+
+Overview. The overall framework of our generative percep-                     beside the MSA, we also develop another channel attention
+tual priors guided diffusion transformer is shown as Fig. 3.                  mechanism guided by the local quality map M. Specifically,
+Given a paired normal-light (NL) image Inl ∈ RH×W ×3                          query element is calculated upon the input feature, while the
+and low-light (LL) image Ill ∈ RH×W ×3 , an encoder E                         calculation of key and value elements are guided by the local
+is employed to extract their latent representations z0nl ∈                    perceptual prior M. Moreover, to facilitate the application of
+    H   W                   H   W
+R f × f ×d and zll ∈ R f × f ×d , where H, W , d, and f                       our LLIE model to LL images of diverse sizes, we remove
+represent the image height, image width, the hidden dimen-                    the positional embedding from the Vision Transformer. In-
+sion, and the down-sampling factor of E. Then, the forward                    stead, the spatial positional embedding are learned with the
+diffusion process is applied upon z0nl and its noised version                 guidance of the local perceptual prior M.
+is denoted as zTnl . For the reverse demonising process, we
+gradually transform the randomly sampled Gaussian noise                                           4   Experiments
+ẑTnl into a clear NL latent feature ẑ0nl step by step. For each             4.1   Experiment Settings
+step t, besides the latent representation for LL image zll ,                  Training and Diffusion. Our model is trained using the
+we also incorporate the generative perceptual prior extracted                 AdamW optimizer with the total training iterations of 1.5M
+from LLaVA (shown in Fig.2) as the guidance in our pro-                       for all datasets and the learning rate is set to 10−4 . Each
+posed GPP-LLIE network ϵθ . Finally, the restored feature                     training input is cropped into 320 × 320, and the batch size
+ẑ0nl is fed into the decoder D to produce the final result Îout .           is set to 16. We use horizontal flips and rotations for data
+GPP-LLIE Network. Our GPP-LLIE network ϵθ is shown                            augmentation. For the diffusion process, the total timesteps
+as Fig. 3, highlighting its several unique characteristics:                   for training is set to 1, 000 during the training, and we use
+    Concat-and-Remove Strategy: Within each GPP-LLIE                          25 steps to accelerate sampling process for the inference.
+block, we first concatenate the LL feature zll to the input to                Low Light Datasets and Metrics. We conduct experi-
+introduce the LL information into the reverse diffusion pro-                  ments on various low light datasets including LOL (Wei
+cess to enhance the fidelity. While at the end of the block,                  et al. 2018), LOL-v2-real, and LOL-v2-synthetic (Yang et al.
+we remove the latter half of the channels, enabling the con-                  2021). Specifically, we train our model using 485, 689,
+catenation of the zll at the start of the next GPP-LLIE block.                and 900 LL-NL pairs on LOL, LOL-v2-real, and LOL-v2-
+    Global Perceptual Prior Guided Layer Norm (GPP-LN):                       synthetic datasets, and other 15, 100, and 100 images are
+To effectively integrate the global score S derived from                      used for evaluation. Moreover, we also test the general-
+VLMs into our GPP-LLIE block, we modulate the layer nor-                      ization of our method on several real-world datasets with-
+malization process. This modulation, driven by the scale and                  out ground truth images including MEF (Ma, Zeng, and
+shift parameters (γ and β) influenced by S, optimizes the                     Wang 2015), LIME (Guo 2016), DICM (Lee, Lee, and Kim
+normalization process to better reflect the perceptual insights               2013), and NPE (Wang et al. 2013). Metrics for paired
+provided by the global perceptual prior. Given an input fea-                  datasets includes Fréchet Inception Distance (FID) (Heusel
+ture zin , the output of our GPP-LN operation is calculated                   et al. 2017), Learned Perceptual Image Patch Similarity
+by: zout = γ · LN(zin ) + β, where γ, β = MLP(S).                             (LPIPS) (Zhang et al. 2018), Deep Image Structure and Tex-
+    Local Perceptual Prior Guided Attention (LPP-Attn): To                    ture Similarity (DISTS) (Ding et al. 2020), and Peak Signal-
+reduce the huge computational cost caused by spatial self-                    to-Noise Ratio (PSNR). Besides, we adopt a no-reference
+attention mechanism, we calculate the attention map along                     metric Natural Image Quality Evaluator (NIQE) (Mittal
+the channel dimension in our GPP-LLIE block. Moreover,                        et al. 2012) for unpaired real data evaluation.
+
+
+                                                                      10756
+        Input            LLFlow          Retinexformer        RQLLIE                  Pydiff               Ours                GT
+
+Figure 4: Visual comparisons on paired dataset. The images are sourced respectively from LOL (row 1), LOL-v2-real (row
+2), and LOL-v2-syn (row3). Previous methods often result in overly smoothed images, consequently obscuring pivotal textural
+details. In contrast, our method yields sharper images while retaining the delicate details. For instance, our method maintains
+the structural complexities of the foliage and branches within the potted plant (first row). In second row, the grain on the wooden
+floor surface, as well as its edge contours, have been well-preserved. Similarly, in the natural landscapes, our method excels at
+enhancing the clarity of twig edges and maintaining color consistency.
+
+
+4.2   Performance on LLIE                                                          Methods              MEF    LIME    DICM    NPE    Mean
+                                                                            SNR-Net (Xu et al. 2022)    4.14    5.51    4.62   4.36   4.60
+Quantitative Results on Paired Dataset. Tab. 1 summa-                      LLFlow (Wang et al. 2022)    3.92    5.29    3.78   4.16   3.98
+                                                                            LL-SKF (Wu et al. 2023)     4.03    5.15    3.70   4.08   3.92
+rizes the quantitative comparisons between our method with                 RQLLIE (Liu et al. 2023b)    4.21    4.86    4.02   4.03   4.13
+current SOTA methods. Our method achieves the superior                     CLEDiff (Yin et al. 2023)    5.27    5.00    4.42   4.57   4.57
+performance on 3 commonly-used benchmarks, highlight-                      PyDiff (Zhou et al. 2023a)   4.24    4.88    4.32   4.38   4.37
+ing its advance and perfect generalization. Notably, the FID                         Ours               3.55   4.24    3.58    4.05   3.67
+scores of our method surpass the best of SOTA methods by
+23.6%, 37.4%, and 26.5% on the LOL, LOL-v2-real, and                      Table 2: Quantitative comparisons on real-world datasets in
+LOL-v2-synthetic, respectively. Moreover, our LPIPS val-                  terms of NIQE. These numbers are obtained by testing with
+ues significantly outperforms the PyDiff by 18.4%. These                  their released LOL weights. [Key: Best, Second Best]
+numbers demonstrate the superior perceptual quality of our
+enhancement and prove the effectiveness of generative per-
+ceptual priors in our method. Besides, our leading DISTS                  gle to preserve color fidelity and illumination harmonization
+and PSNR scores show the satisfactory ability of our model                (LLFlow and RQ-LLIE in row 1).
+in recovering texture details and maintaining fidelity.                   Performances on Real-world Dataset. To further verify
+Qualitative Results on Paired Datasets. We present the                    the generalization of our method, we extend our evalua-
+enhanced images of different methods in Fig. 4. Our ap-                   tions to real-world low light datasets. Notably, we select
+pealing and realistic enhancement results demonstrate our                 several methods that perform well in Tab. 1 and we use the
+method can generate images with pleasant illumination, cor-               weights of various methods trained on LOL training split to
+rect color retrieval, and enhanced texture details. For exam-             ensure fairness. The quantitative comparisons are presented
+ple, the rich structural details of potted plants in row 1, the           as Tab. 2, where the NIQE metric is employed. It can be seen
+well preserved wooden floor surface and its edge contours                 that our model achieve the best performance on the first 3
+in row 2, and the enhanced twig edge in row 3. In con-                    datasets and the second best result on NPE, thereby signifi-
+trast, previous methods tend to output blurry results without             cantly outperforming other methods across real-world data.
+rich textures (Retinexformer and PyDiff in row 2) and strug-                 Moreover, visual comparisons are reported in Fig. 1 and
+
+
+                                                                  10757
+        Input               SNR-Net         LLFlow            LL-SKF                RQLLIE              Pydiff              Ours
+
+Figure 5: Visual comparisons on real-world datasets (DICM (Lee, Lee, and Kim 2013)). Our method adeptly handles the diverse
+and uneven illumination levels present in the original image. It effectively enhances brightness and contrast while avoiding the
+overexposure of original bright areas and maintaining natural coloration, generating visually appealing results.
+
+
+         Model      FID ↓     LPIPS↓   DISTS↓   PSNR↑                     ever, compared to Variant 1, our full GPP-LLIE shows sig-
+         Ours       36.73     0.081    0.063    27.51                     nificantly enhanced FID and LPIPS scores by integrating the
+        Variant 1   49.83      0.103    0.084    26.88
+        Variant 2   47.18      0.100    0.081    27.06                    local perceptual prior using our proposed LPP-Attn mecha-
+                                                                          nism. Besides, we introduce the Variant 2 that replaces our
+Table 3: By integrating the local perceptual prior using LPP-             LPP-Attn with spatial feature transform layer (Wang et al.
+Attn mechanism, GPP-LLIE shows enhanced performance                       2018) applied in StableSR (Wang et al. 2023), our LPP-
+in terms of FID and LPIPS. Besides, our LPP-Attn performs                 Attn mechanism achieves 22%, 19%, and 22% lower values
+better than spatial feature transform applied in StableSR.                in FID, LPIPS, and DISTS respectively. These comparisons
+                                                                          manifest the importance of LPP-Attn and the local percep-
+         Model      FID ↓     LPIPS↓   DISTS↓   PSNR↑                     tual prior generated by our proposed extraction pipeline.
+        Variant 1   49.83     0.103    0.084    26.88                     Global Perceptual Prior and GPP-LN. Based on Variant
+        Variant 3   61.36      0.113    0.095    26.14                    1, we implement several adaptations to illustrate the effec-
+        Variant 4   58.36      0.111    0.092    26.30                    tiveness of our extracted global perceptual prior and the cor-
+                                                                          responding GPP-LN. (1) We remove global perceptual prior
+Table 4: Unlike GPP-LN, removing the global perceptual                    and GPP-LN and denote the remaining network as Variant
+score or directly adding it to ẑTnl yields quite poor results.           3. (2) We remove GPP-LN operation and directly add the
+                                                                          global score to the noised latent feature ẑTnl . This framework
+                                                                          is referenced as Variant 4. The quantitative results of Vari-
+Fig. 5, where previous methods tend to output overexpo-                   ant 3 and Variant 4 are reported in Tab. 4. The discernible
+sure results or struggle to preserve details. In contrast, our            performance disparity between Variant 3 and Variant 1 (i.e.,
+enhanced images are more realistic and appealing and our                  23% higher FID and 10% higher in LPIPS) illustrates the
+method can flexibly enhance images with various illumina-                 superiority of the global perceptual score and our proposed
+tions. Specifically, for outdoor images with uneven illumina-             GPP-LN. Besides, compared to Variant 4, the GPP-LN em-
+tion distribution, our method enhances the brightness while               ployed in Variant 1 better incorporates the prior informa-
+simultaneously preventing local overexposure, thereby pre-                tion and guides our model achieve better performance (i.e.,
+serving more details (i.e., the enhanced architectural details            14.6% lower in FID and 7.2% lower in LPIPS).
+with sharper edges and preserved details in row 1 of Fig. 5,
+and the improved contrast in the sky and cloud area in row 2                                   5    Conclusion
+of Fig. 5 . These vivid and natural enhanced images, together             To achieve adaptive and realistic enhancement in real-world
+with quantitative numbers reported in Tab. 1 and Tab. 2,                  scenarios, we introduce a novel LLIE framework (GPP-
+demonstrate the superior effectiveness and generalization of              LLIE) guided by generative perceptual priors. We firstly
+our method compared to the current SOTA.                                  develop a pipeline for generative perceptual priors extrac-
+                                                                          tion based on pre-trained VLMs. Specifically, we design
+4.3   Ablation Study                                                      several text prompts to guide VLMs to assess low-level at-
+To analyze the contribution of each component in our                      tributes of low-light images globally and locally. We also
+method, we conduct extensive ablation studies.                            introduce a sigmoid-based quantification strategy to output
+Local Perceptual Prior and LPP-Attn. To study the impor-                  the global score and local quality map. Moreover, we intro-
+tance of local perceptual prior and our proposed LPP-Attn,                duce a transformer network as the backbone for the diffusion
+we remove these two parts from our model and denote the                   process, where we design the global perceptual priors modu-
+remaining network as Variant 1. Tab. 3 reports the quanti-                lated layer normalization and local perceptual priors guided
+tative performance of Variant 1 on LOL dataset, which still               attention mechanism to guide the enhancement. We evaluate
+presents competitive enhancement performance on all mea-                  our method on 3 paired and 4 real-world datasets, demon-
+sured metrics compared to the current SOTA in Tab. 1. How-                strating superior performance and good generalization.
+
+
+                                                                  10758
+                       References                                       rule converge to a local nash equilibrium. In Advances in
+Ancuti, C. O.; Ancuti, C.; Vasluianu, F.-A.; Timofte, R.;               neural information processing systems.
+et al. 2023. NTIRE 2023 HR NonHomogeneous Dehazing                      Ho, J.; Jain, A.; and Abbeel, P. 2020. Denoising Diffusion
+Challenge Report. In CVPRW.                                             Probabilistic Models. In Advances in neural information
+Ancuti, C. O.; Ancuti, C.; Vasluianu, F.-A.; et al. 2024.               processing systems.
+NTIRE 2024 Dense and nonhomogeneous dehazing chal-                      Huang, G.; Wang, X.; Wu, W.; Zhou, H.; and Wu, Y. 2016.
+lenge report. In CVPRW.                                                 Real-time lane-vehicle detection and tracking system. In
+Cai, Y.; Bian, H.; Lin, J.; Wang, H.; Timofte, R.; and Zhang,           Chinese Control and Decision Conference (CCDC).
+Y. 2023. Retinexformer: One-stage Retinex-based Trans-                  Jiang, H.; Luo, A.; Fan, H.; Han, S.; and Liu, S. 2023a.
+former for Low-light Image Enhancement. In ICCV.                        Low-light Image Enhancement with wavelet-based Diffu-
+Deepanshu, R.; Lal, K. J.; and Parihar, A. S. 2021. Edge                sion Models. In ACM Transactions on Graphics.
+guided low-light image enhancement. In Proceedings of                   Jiang, H.; Luo, A.; Han, S.; Fan, H.; and Liu, S. 2023b.
+the International Conference on Intelligent Computing and               Low-Light Image Enhancement with Wavelet-based Diffu-
+Control Systems.                                                        sion Models. In Siggraph Asia.
+Dhariwal, P.; and Nichol, A. 2021. Diffusion models beat                Jobsob, D.; Zia-ur, R.; and Woodell, G. 1997. A multiscale
+gans on image synthesis. In NeurIPS.                                    retinex for bridging the gap between color images and the
+Ding, K.; Ma, K.; Wang, S.; and Simoncelli, E. P. 2020. Im-             human observation of scenes. In IEEE Transactions on Im-
+age quality assessment: Unifying structure and texture sim-             age Processing.
+ilarity. In IEEE Transactions on Pattern Analysis and Ma-               Kim, E.; Lee, S.; Park, J.; and Choi, S. 2021. Deep edge-
+chine Intelligence.                                                     aware interactive colorization against color-bleeding effects.
+Dong, W.; Zhou, H.; Tian, Y.; Sun, J.; Liu, X.; Zhai, G.;               In ICCV.
+and Chen, J. 2024a. ShadowRefiner: Towards Mask-free                    Lee, C.; Lee, C.; and Kim, C.-S. 2013. Contrast enhance-
+Shadow Removal via Fast Fourier Transformer. In CVPRW.                  ment based on layered difference representation of 2D his-
+Dong, W.; Zhou, H.; Wang, R.; Liu, X.; Zhai, G.; and                    tograms. In IEEE Transactions on Image Processing.
+Chen, J. 2024b. DehazeDCT: Towards Effective Non-                       Li, W.; Wu, G.; Wang, W.; Ren, P.; and Liu, X. 2023.
+Homogeneous Dehazing via Deformable Convolutional                       FastLLVE: Real-Time Low-Light Video Enhancement with
+Transformer. In CVPRW.                                                  Intensity-Aware Lookup Table. In Proceedings of the ACM
+Dong, W.; Zhou, H.; and Xu, D. 2018. A New Sclera Seg-                  Conference on Multimedia.
+mentation and Vessels Extraction Method for Sclera Recog-               Liang, Z.; Li, C.; Zhou, S.; Feng, R.; and Loy, C. C. 2023.
+nition. In 2018 10th International Conference on Communi-               Iterative prompt learning for unsupervised backlit image en-
+cation Software and Networks (ICCSN).                                   hancement. In Proceedings of the IEEE International Con-
+Dong, W.; Zhou, H.; Zhang, Y.; Liu, X.; and Chen, J. 2024c.             ference on Computer Vision.
+ECMamba: Consolidating Selective State Space Model with                 Liu, H.; Li, C.; Wu, Q.; ; and Lee, Y. J. 2023a. Visual in-
+Retinex Guidance for Efficient Multiple Exposure Correc-                struction tuning. In NeurIPS.
+tion. arXiv preprint arXiv:2410.21535.                                  Liu, X.; Ma, Y.; Shi, Z.; and Chen, J. 2019. GridDehazeNet:
+Fan, M.; Wang, W.; Yang, W.; and Liu, J. 2020. Integrating              Attention based Multi-Scale Network for Image Dehazing.
+Semantic Segmentation and Retinex Model for Low Light                   In Proceedings of the IEEE International Conference on
+Image Enhancement. In Proceedings of the ACM Confer-                    Computer Vision.
+ence on Multimedia.                                                     Liu, X.; Shi, Z.; Wu, Z.; Chen, J.; and Zhai, G. 2022. Grid-
+Fu, K.; Peng, Y.; Zhang, Z.; Xu, Q.; Liu, X.; Wang, J.;                 DehazeNet+: An Enhanced Multi-Scale Network with Intra-
+and Zhai, G. 2024. AttentionLut: Attention Fusion-based                 Task Knowledge Transfer for Single Image Dehazing. In
+Canonical Polyadic LUT for Real-time Image Enhance-                     IEEE Transactions on Intelligent Transportation Systems.
+ment. arXiv preprint arXiv:2401.01569.                                  Liu, Y.; Huang, T.; Dong, W.; Wu, F.; Li, X.; and Shi, G.
+Fu, X.; Zeng, D.; Huang, X.; Xiao-Ping, Z.; and Xinghao,                2023b. Low-Light Image Enhancement with Multi-stage
+D. 2016. A weighted variational model for simultaneous                  Residue Quantization and Brightness-aware Attention. In
+reflectance and illumination estimation. In CVPR.                       ICCV.
+Guo, X. 2016. LIME: A method for low-light image en-                    Lore, K. G.; Adedotun, A.; and Soumikm, S. 2017. LLNet:
+hancement. In Proceedings of the ACM Conference on Mul-                 A deep autoencoder approach to natural low-light image en-
+timedia.                                                                hancement. In Pattern Recognition.
+He, C.; Fang, C.; Zhang, Y.; Li, K.; Tang, L.; You, C.; Xiao,           Luo, Z.; Gustafsson, F. K.; Zhao, Z.; and et.al. 2024.
+F.; Guo, Z.; and Li, X. 2023. Reti-Diff: Illumination Degra-            Controlling Vision-Language Models for Universal Image
+dation Image Restoration with Retinex-based Latent Diffu-               Restoration. In ICLR.
+sion Model. arXiv preprint arXiv:2311.11638.                            Ma, K.; Zeng, K.; and Wang, Z. 2015. Perceptual quality as-
+Heusel, M.; Ramsauer, H.; Unterthiner, T.; Nessler, B.; and             sessment for multi-exposure image fusion. In IEEE Trans-
+Hochreiter, S. 2017. Gans trained by a two time-scale update            actions on Image Processing.
+
+
+                                                                10759
+Mittal, A.; Soundararajan, R.; Bovik, A. C.; and et al. 2012.             Xu, D.; Dong, W.; and Zhou, H. 2022. Sclera Recognition
+Making a ’completely blind’ image quality analyzer. In                    Based on Efficient Sclera Segmentation and Significant Ves-
+IEEE Signal Processing Letters.                                           sel Matching. In The Computer Journal.
+Peebles, W.; and Xie, S. 2023. Scalable Diffusion Models                  Xu, X.; Wang, R.; Fu, C.-W.; and Jia, J. 2022. Snr-aware
+with Transformers. In ICCV.                                               low-light image enhancement. In CVPR.
+Radford, A.; Kim, J. W.; Hallacy, C.; Ramesh, A.; Goh, G.;                Xu, X.; Wang, R.; and Lu, J. 2023. Low-Light Image En-
+Agarwal, S.; Sastry, G.; Askell, A.; Mishkin, P.; Clark, J.;              hancement via Structure Modeling and Guidance. In CVPR.
+Krueger, G.; and Sutskever, I. 2021. Learning Transfer-                   Yan, Z.; Zhang, H.; Wang, B.; Paris, S.; and Yizhou, Y. 2016.
+able Visual Models From Natural Language Supervision. In                  Automatic Photo Adjustment Using Deep Neural Networks.
+ICML.                                                                     In ACM Transactions on Graphics.
+Rombach, R.; Blattmann, A.; Lorenz, D.; Esser, P.; and Om-                Yang, W.; Wang, S.; Fang, Y.; Wang, Y.; and Liu, J. 2020.
+mer, B. 2022. High-Resolution Image Synthesis with Latent                 From Fidelity to Perceptual Quality: A Semi-Supervised
+Diffusion Models. In CVPR.                                                Approach for Low-Light Image Enhancement. In CVPR.
+Shen, Z.; and Gupta, G. 2022. Semantic-guided zero-shot                   Yang, W.; Wang, W.; Huang, H.; Wang, S.; and Liu, J. 2021.
+learning for low-light image/video enhancement. In Pro-                   Sparse gradient regularized deep retinex network for robust
+ceedings of the IEEE Winter Conference on Applications of                 low-light image enhancement. In IEEE Transactions on Im-
+Computer Vision.                                                          age Processing.
+Sun, H.; Li, W.; Liu, J.; Chen, H.; Pei, R.; Zou, X.; Yan, Y.;            Yi, X.; Xu, H.; Zhang, H.; Tang, L.; and Ma, J. 2023. Diff-
+and Yang, Y. 2024. CoSeR: Bridging Image and Language                     Retinex: Rethinking Low-light Image Enhancement with A
+for Cognitive Super-Resolution. In CVPR.                                  Generative Diffusion Model. In ICCV.
+Vasluianu, F.-A.; Seizinger, T.; Zhou, Z.; Wu, Z.; Chen, C.;              Yin, X.; Liu, X.; and Liu, H. 2019. FMSNet: Underwater
+et al. 2024. NTIRE 2024 Image Shadow Removal Challenge                    Image Restoration by Learning from a Synthesized Dataset.
+Report. In CVPRW.                                                         In International Conference on Artificial Neural Networks
+Wang, J.; Yue, Z.; Zhou, S.; Chan, K. C.; and Loy, C. C.                  (ICANN).
+2023. Exploiting Diffusion Prior for Real-World Image                     Yin, Y.; Xu, D.; Tan, C.; Liu, P.; Zhao, Y.; and Wei, Y. 2023.
+Super-Resolution. In Proceedings of the ACM Conference                    CLE Diffusion: Controllable Light Enhancement Diffusion
+on Multimedia.                                                            Model. In Proceedings of the ACM Conference on Multime-
+Wang, R.; Zhang, Q.; Fu, C.-W.; Shen, X.; Zheng, W.-S.;                   dia.
+and Jia, J. 2020. Underexposed Photo Enhancement using                    Zamir, S. W.; Arora, A.; Khan, S.; Hayat, M.; Khan, F. S.;
+Deep Illumination Estimation. In Proceedings of the IEEE                  Yang, M.-H.; ; and Shao, L. 2020. Learning enriched fea-
+Conference on Computer Vision and Pattern Recognition.                    tures for real image restoration and enhancement. In ECCV.
+Wang, S.; Zheng, J.; Hu, H.-M.; and Li, B. 2013. Natu-                    Zhang, R.; Isola, P.; Efros, A. A.; Shechtman, E.; and Wang,
+ralness preserved enhancement algorithm for non-uniform                   O. 2018. The unreasonable effectiveness of deep features as
+illumination images. In IEEE Transactions on Image Pro-                   a perceptual metric. In Proceedings of the IEEE Conference
+cessing.                                                                  on Computer Vision and Pattern Recognition.
+Wang, X.; Yu, K.; Dong, C.; and Loy, C. C. 2018. Recover-                 Zhang, Y.; Zhang, J.; Guo, X.; and et al. 2019. Kindling the
+ing realistic texture in image super-resolution by deep spatial           darkness: A practical low-light image enhancer. In Proceed-
+feature transform. In CVPR.                                               ings of the ACM Conference on Multimedia.
+Wang, Y.; Wan, R.; Yang, W.; Li, H.; Lap-Pui, C.; and Kot,                Zheng, N.; Zhou, M.; Dong, Y.; Rui, X.; Li, J. H. C.;
+A. 2022. Low-light image enhancement with normalizing                     and Zhao, F. 2023. Empowering lowlight image enhancer
+flow. In Proceedings of the AAAI Conference on Artificial                 through customized learnable priors. In ICCV.
+Intelligence.                                                             Zhou, D.; Yang, Z.; Yang, Y.; and et al. 2023a. Pyramid
+Wei, C.; Wang, W.; Yang, W.; and Liu, J. 2018. Deep retinex               Diffusion Models For Low-light Image Enhancement. In
+decomposition for low-light enhancement. In Proceedings                   IJCAI.
+of the Conference on British Machine Vision Conference.                   Zhou, H.; Dong, W.; Liu, X.; Liu, S.; Min, X.; Zhai, G.; and
+                                                                          Chen, J. 2024. Low Light Image Enhancement via Genera-
+Wu, H.; Zhang, Z.; Zhang, E.; Chen, C.; Liang Liao, A. W.;
+                                                                          tive Latent Feature based Codebook Retrieval. In ECCV.
+Xu, K.; Li, C.; Hou, J.; Zhai, G.; Geng Xue, W. S.; Yan, Q.;
+and Lin, W. 2024. Q-Instruct: Improving Low-level Visual                  Zhou, H.; Dong, W.; Liu, Y.; and Chen, J. 2023b. Breaking
+Abilities for Multi-modality Foundation Models. In CVPR.                  Through the Haze: An Advanced Non-Homogeneous De-
+                                                                          hazing Method based on Fast Fourier Convolution and Con-
+Wu, W.; Weng, J.; Zhang, P.; Wang, X.; Yang, W.; and Jiang,
+                                                                          vNeXt. In CVPRW.
+J. 2022. Uretinex-net: Retinex-based deep unfolding net-
+work for low-light image enhancement. In CVPR.                            Zhu, M.; Pan, P.; Chen, W.; and Yang, Y. 2020. EEMEFN:
+                                                                          Low-light image enhancement via edge-enhanced multi-
+Wu, Y.; Pan, C.; Wang, G.; Yang, Y.; Wei, J.; Li, C.; and                 exposure fusion network. In Proceedings of the AAAI Con-
+Shen, H. T. 2023. Learning Semantic-Aware Knowledge                       ference on Artificial Intelligence.
+Guidance for Low-Light Image Enhancement. In CVPR.
+
+
+                                                                  10760
+
