@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "论文学习/精读笔记/01-4KAgent/关键点.md",
+                "file": "论文学习/精读列表.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "关键点"
+              "title": "精读列表"
             }
           }
         ]
@@ -112,7 +112,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "论文学习/精读笔记/01-4KAgent/关键点.md",
+                "file": "论文学习/精读列表.md",
                 "collapseAll": true,
                 "extraContext": true,
                 "sortOrder": "alphabetical",
@@ -201,11 +201,11 @@
       "obsidian-git:Open Git source control": false
     }
   },
-  "active": "000d5cf243f9208a",
+  "active": "9375e6cecd3f314c",
   "lastOpenFiles": [
+    "论文学习/精读笔记/01-4KAgent/关键点.md",
     "论文学习/精读笔记/02-水下语义敏感增强/水下语义敏感增强.md",
     "论文学习/精读笔记/01-4KAgent/4KAgent.md",
-    "论文学习/精读笔记/01-4KAgent/关键点.md",
     "论文学习/精读笔记/03-DATPRL-IR/DATPRL-IR.md",
     "论文学习/精读笔记/00-精读笔记索引.md",
     "论文学习/精读列表.md",
