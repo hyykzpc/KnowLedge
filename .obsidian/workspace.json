@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "论文学习/精读笔记/07-BiLoRA/关键点.md",
+                "file": "论文学习/精读笔记/06-Multinex/GPT精读资料.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "关键点"
+              "title": "GPT精读资料"
             }
           }
         ]
@@ -204,9 +204,11 @@
   },
   "active": "000d5cf243f9208a",
   "lastOpenFiles": [
+    "论文学习/精读笔记/07-BiLoRA/GPT精读资料.md",
+    "论文学习/精读笔记/06-Multinex/GPT精读资料.md",
+    "论文学习/精读笔记/07-BiLoRA/关键点.md",
     "README.md",
     "论文学习/精读笔记/07-BiLoRA",
-    "论文学习/精读笔记/07-BiLoRA/关键点.md",
     "Pasted image 20260812152638.png",
     "未命名",
     "论文学习/精读笔记/04-GPP-LLIE/GPP-LLIE.md",
@@ -234,7 +236,6 @@
     "theme/TIPS for Blue Topaz/Example/任务卡片-dataview 任务查询举例.md",
     "OpenCV_Study/02 Learning/第8章 直方图与傅里叶变换.md",
     "OpenCV_Study/02 Learning/第7章 图像金字塔与轮廓检测.md",
-    "OpenCV_Study/02 Learning/第6章 边缘检测.md",
     "theme/TIPS for Blue Topaz/Example/◾ TableExample",
     "theme/TIPS for Blue Topaz/Example/◾ Cssclass声明样式举例",
     "theme/TIPS for Blue Topaz/Example/Reading",
