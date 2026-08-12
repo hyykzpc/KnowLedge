@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "论文学习/精读笔记/07 BiLaLoRA.md",
+                "file": "论文学习/精读笔记/07-BiLoRA/关键点.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "07 BiLaLoRA"
+              "title": "关键点"
             }
           }
         ]
@@ -204,14 +204,17 @@
   },
   "active": "000d5cf243f9208a",
   "lastOpenFiles": [
+    "README.md",
+    "论文学习/精读笔记/07-BiLoRA",
+    "论文学习/精读笔记/07-BiLoRA/关键点.md",
+    "Pasted image 20260812152638.png",
+    "未命名",
+    "论文学习/精读笔记/04-GPP-LLIE/GPP-LLIE.md",
+    "论文学习/精读笔记/04-GPP-LLIE/关键点.md",
     "论文学习/精读笔记/01-4KAgent/结构图/fig2-04.png",
-    "论文学习/精读笔记/07 BiLaLoRA.md",
     "论文学习/精读笔记/06-Multinex/Multinex.md",
     "论文学习/精读笔记/05-HybridAgent/HybridAgent.md",
     "论文学习/精读笔记/03-DATPRL-IR/DATPRL-IR.md",
-    "论文学习/精读笔记/04-GPP-LLIE/关键点.md",
-    "Pasted image 20260812152638.png",
-    "论文学习/精读笔记/04-GPP-LLIE/GPP-LLIE.md",
     "论文学习/精读笔记/02-水下语义敏感增强/水下语义敏感增强.md",
     "论文学习/精读笔记/02-水下语义敏感增强/关键点.md",
     "论文学习/精读笔记/06-Multinex/关键点.md",
@@ -219,20 +222,19 @@
     "论文学习/精读列表.md",
     "论文学习/精读笔记/01-4KAgent/4KAgent.md",
     "论文学习/精读笔记/00-精读笔记索引.md",
-    "README.md",
     "论文学习",
     "论文学习.md",
     "test.md",
-    "OpenCV学习/02 Learning/第18章 OpenCV的DNN模块.md",
+    "OpenCV_Study/02 Learning/第18章 OpenCV的DNN模块.md",
     "Obsidian_data",
-    "OpenCV学习/02 Learning/第10章 文档扫描OCR识别.md",
-    "OpenCV学习/02 Learning/第11章 图像特征-Harris.md",
-    "OpenCV学习/02 Learning/第9章 信用卡数字识别.md",
-    "OpenCV学习/02 Learning/第4章 图像形态学操作.md",
+    "OpenCV_Study/02 Learning/第10章 文档扫描OCR识别.md",
+    "OpenCV_Study/02 Learning/第11章 图像特征-Harris.md",
+    "OpenCV_Study/02 Learning/第9章 信用卡数字识别.md",
+    "OpenCV_Study/02 Learning/第4章 图像形态学操作.md",
     "theme/TIPS for Blue Topaz/Example/任务卡片-dataview 任务查询举例.md",
-    "OpenCV学习/02 Learning/第8章 直方图与傅里叶变换.md",
-    "OpenCV学习/02 Learning/第7章 图像金字塔与轮廓检测.md",
-    "OpenCV学习/02 Learning/第6章 边缘检测.md",
+    "OpenCV_Study/02 Learning/第8章 直方图与傅里叶变换.md",
+    "OpenCV_Study/02 Learning/第7章 图像金字塔与轮廓检测.md",
+    "OpenCV_Study/02 Learning/第6章 边缘检测.md",
     "theme/TIPS for Blue Topaz/Example/◾ TableExample",
     "theme/TIPS for Blue Topaz/Example/◾ Cssclass声明样式举例",
     "theme/TIPS for Blue Topaz/Example/Reading",
@@ -246,8 +248,6 @@
     "theme/TIPS for Blue Topaz/Attachemnt/Pasted image 20211229171215.png",
     "theme/TIPS for Blue Topaz/Attachemnt/obsidian_image.png",
     "theme/TIPS for Blue Topaz/Attachemnt",
-    "theme/TIPS for Blue Topaz",
-    "theme",
-    "新建文件夹"
+    "theme/TIPS for Blue Topaz"
   ]
 }

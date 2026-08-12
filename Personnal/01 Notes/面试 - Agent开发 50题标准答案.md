@@ -11,7 +11,7 @@ tags:
   - "#多Agent"
 status: developing
 source:
-  - "[[01 Sources/面试 - 蔚来日常 agent开发 题目]]"
+  - "[[面试 - 蔚来日常 agent开发 题目]]"
   - "DataWhale hello-agents: https://github.com/datawhalechina/hello-agents"
   - "Awesome-LLM-Interview: https://github.com/DolbyUUU/Awesome-LLM-Interview-Questions-and-Answers"
   - "Uplatz Agentic AI 50 Q&A: https://uplatz.com/blog/interview-questions-booklet-agentic-ai/"
@@ -21,9 +21,9 @@ source:
   - "百度 AI Agent 100 问: https://developer.baidu.com/article/detail.html?id=5315733"
   - "牛客网 大模型高频 50 题: https://www.nowcoder.com/discuss/769275190441148416"
 related:
-  - "[[01 Notes/面试 - 蔚来日常 Agent开发 Q&A]]"
+  - "[[面试 - 蔚来日常 Agent开发 Q&A]]"
   - "[[LLM Wiki 知识库构建法]]"
-  - "[[05 MOC/Agent 面试 MOC]]"
+  - "[[Agent 面试 MOC]]"
 ---
 
 # Agent 开发面试 50 题标准答案（口述版）
@@ -978,9 +978,9 @@ DPO 的思路更直接。它不需要 Reward Model，直接拿 (prompt, 更好�
 
 ## 知识连接
 
-- [[01 Notes/面试 - 蔚来日常 Agent开发 Q&A]] — 蔚来面试 19 题详解
+- [[面试 - 蔚来日常 Agent开发 Q&A]] — 蔚来面试 19 题详解
 - [[LLM Wiki 知识库构建法]] — 本知识库方法论
-- [[05 MOC/Agent 面试 MOC]] — Agent 面试话题索引
+- [[Agent 面试 MOC]] — Agent 面试话题索引
 
 ## 后续问题
 

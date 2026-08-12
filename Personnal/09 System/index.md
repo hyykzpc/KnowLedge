@@ -51,8 +51,8 @@ status: evergreen
 
 | 页面 | 说明 | 状态 |
 |------|------|------|
-| [[01 Notes/面试 - 蔚来日常 Agent开发 Q&A]] | Agent/RAG/并发/数据库/Java/Python/C++ 面试 Q&A | developing |
-| [[01 Notes/面试 - Agent开发 50题标准答案]] | Agent 面试 50 题标准答案，9 大模块覆盖全链路 | developing |
+| [[面试 - 蔚来日常 Agent开发 Q&A]] | Agent/RAG/并发/数据库/Java/Python/C++ 面试 Q&A | developing |
+| [[面试 - Agent开发 50题标准答案]] | Agent 面试 50 题标准答案，9 大模块覆盖全链路 | developing |
 
 ## 原始资料
 

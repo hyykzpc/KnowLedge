@@ -4,15 +4,15 @@
 
 ## 推荐阅读顺序
 
-1. [项目入门](./project-onboarding.md)
+1. [项目入门](project-onboarding.md)
    - 先理解项目是什么、有哪些运行单元、从哪些文件开始读。
-2. [架构视图](./architecture-views.md)
+2. [架构视图](architecture-views.md)
    - 用系统上下文、容器、组件、部署和数据视图理解整体结构。
-3. [关键流程](./key-flows.md)
+3. [关键流程](key-flows.md)
    - 跟踪登录、聊天、RAG、上传、缓存、限流等端到端流程。
-4. [技术实现](./technical-implementation.md)
+4. [技术实现](technical-implementation.md)
    - 深入 FastAPI、Django、Vue、LangChain、Chroma、Redis、MySQL 的实现方式。
-5. [架构设计学习笔记](./architecture-design-learning.md)
+5. [架构设计学习笔记](architecture-design-learning.md)
    - 对照常见架构模式学习当前项目的设计取舍。
 6. [ADR 决策记录](./adr/)
    - 阅读关键技术选择背后的原因和后果。

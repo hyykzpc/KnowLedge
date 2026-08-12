@@ -11,7 +11,7 @@ tags:
   - "#编程语言"
 status: developing
 source:
-  - "[[01 Sources/面试 - 蔚来日常 agent开发 题目]]"
+  - "[[面试 - 蔚来日常 agent开发 题目]]"
 related:
   - "[[LLM Wiki 知识库构建法]]"
 ---
