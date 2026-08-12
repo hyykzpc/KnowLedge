@@ -80,7 +80,8 @@
       }
     ],
     "direction": "horizontal",
-    "width": 300
+    "width": 200,
+    "collapsed": true
   },
   "right": {
     "id": "b99cad9953a23bf7",
@@ -204,6 +205,7 @@
   },
   "active": "000d5cf243f9208a",
   "lastOpenFiles": [
+    "Pasted image 20260812152638.png",
     "论文学习/精读笔记/04-GPP-LLIE/GPP-LLIE.md",
     "论文学习/精读笔记/02-水下语义敏感增强/水下语义敏感增强.md",
     "论文学习/精读笔记/02-水下语义敏感增强/关键点.md",
@@ -231,7 +233,6 @@
     "OpenCV学习/02 Learning/第7章 图像金字塔与轮廓检测.md",
     "OpenCV学习/02 Learning/第6章 边缘检测.md",
     "theme/TIPS for Blue Topaz/Example/77-Example.md",
-    "OpenCV学习/02 Learning/第5章 图像梯度计算.md",
     "theme/TIPS for Blue Topaz/Example/◾ TableExample",
     "theme/TIPS for Blue Topaz/Example/◾ Cssclass声明样式举例",
     "theme/TIPS for Blue Topaz/Example/Reading",
