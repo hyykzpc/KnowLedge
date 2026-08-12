@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "论文学习/精读笔记/01-4KAgent/关键点.md",
+                "file": "论文学习/精读笔记/01-4KAgent/4KAgent.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "关键点"
+              "title": "4KAgent"
             }
           }
         ]
@@ -204,12 +204,17 @@
   },
   "active": "000d5cf243f9208a",
   "lastOpenFiles": [
+    "论文学习/精读笔记/01-4KAgent/关键点-润色版.md",
+    "论文学习/精读笔记/01-4KAgent/关键点.md",
+    "论文学习/精读笔记/01-4KAgent/GPT精读资料.md",
+    "论文学习/精读笔记/06-Multinex/关键点-润色版.md",
+    "论文学习/精读笔记/04-GPP-LLIE/关键点-润色版.md",
+    "论文学习/精读笔记/07-BiLoRA/关键点-润色版.md",
+    "论文学习/精读笔记/02-水下语义敏感增强/关键点-润色版.md",
     "论文学习/精读笔记/04-GPP-LLIE/GPT精读资料.md",
     "论文学习/精读笔记/04-GPP-LLIE/GPP-LLIE.md",
     "论文学习/精读笔记/04-GPP-LLIE/关键点.md",
     "论文学习/精读笔记/03-DATPRL-IR/DATPRL-IR.md",
-    "论文学习/精读笔记/01-4KAgent/GPT精读资料.md",
-    "论文学习/精读笔记/01-4KAgent/关键点.md",
     "论文学习/精读笔记/05-HybridAgent/HybridAgent.md",
     "论文学习/精读笔记/06-Multinex/GPT精读资料.md",
     "论文学习/精读笔记/07-BiLoRA/GPT精读资料.md",
@@ -231,11 +236,6 @@
     "test.md",
     "OpenCV_Study/02 Learning/第18章 OpenCV的DNN模块.md",
     "Obsidian_data",
-    "OpenCV_Study/02 Learning/第10章 文档扫描OCR识别.md",
-    "OpenCV_Study/02 Learning/第11章 图像特征-Harris.md",
-    "OpenCV_Study/02 Learning/第9章 信用卡数字识别.md",
-    "OpenCV_Study/02 Learning/第4章 图像形态学操作.md",
-    "theme/TIPS for Blue Topaz/Example/任务卡片-dataview 任务查询举例.md",
     "theme/TIPS for Blue Topaz/Example/◾ TableExample",
     "theme/TIPS for Blue Topaz/Example/◾ Cssclass声明样式举例",
     "theme/TIPS for Blue Topaz/Example/Reading",
