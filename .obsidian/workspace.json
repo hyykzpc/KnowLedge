@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "论文学习/精读笔记/04-GPP-LLIE/GPP-LLIE.md",
+                "file": "论文学习/精读笔记/04-GPP-LLIE/关键点.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "GPP-LLIE"
+              "title": "关键点"
             }
           }
         ]
@@ -112,7 +112,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "论文学习/精读笔记/04-GPP-LLIE/GPP-LLIE.md",
+                "file": "论文学习/精读笔记/04-GPP-LLIE/关键点.md",
                 "collapseAll": true,
                 "extraContext": true,
                 "sortOrder": "alphabetical",
@@ -187,7 +187,8 @@
       }
     ],
     "direction": "horizontal",
-    "width": 310.5
+    "width": 200,
+    "collapsed": true
   },
   "left-ribbon": {
     "hiddenItems": {
@@ -203,8 +204,9 @@
   },
   "active": "000d5cf243f9208a",
   "lastOpenFiles": [
-    "论文学习/精读笔记/05-HybridAgent/HybridAgent.md",
     "论文学习/精读笔记/04-GPP-LLIE/GPP-LLIE.md",
+    "论文学习/精读笔记/04-GPP-LLIE/关键点.md",
+    "论文学习/精读笔记/05-HybridAgent/HybridAgent.md",
     "论文学习/精读笔记/03-DATPRL-IR/DATPRL-IR.md",
     "论文学习/精读笔记/06-Multinex/关键点.md",
     "论文学习/精读笔记/06-Multinex/Multinex.md",
@@ -230,7 +232,6 @@
     "OpenCV学习/02 Learning/第6章 边缘检测.md",
     "theme/TIPS for Blue Topaz/Example/77-Example.md",
     "OpenCV学习/02 Learning/第5章 图像梯度计算.md",
-    "6.2 非极大值抑制.md",
     "theme/TIPS for Blue Topaz/Example/◾ TableExample",
     "theme/TIPS for Blue Topaz/Example/◾ Cssclass声明样式举例",
     "theme/TIPS for Blue Topaz/Example/Reading",
