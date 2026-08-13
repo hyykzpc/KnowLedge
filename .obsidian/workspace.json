@@ -13,7 +13,7 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "论文学习/精读笔记/04-GPP-LLIE/关键点.md",
+                "file": "论文学习/精读笔记/06-Multinex/关键点.md",
                 "mode": "source",
                 "source": false
               },
@@ -202,8 +202,9 @@
       "obsidian-git:Open Git source control": false
     }
   },
-  "active": "9375e6cecd3f314c",
+  "active": "000d5cf243f9208a",
   "lastOpenFiles": [
+    "论文学习/精读笔记/04-GPP-LLIE/关键点.md",
     "论文学习/精读笔记/08-UARE",
     "论文学习/精读笔记/01-4KAgent/关键点.md",
     "论文学习/精读笔记/01-4KAgent/关键点-润色版.md",
@@ -215,7 +216,6 @@
     "论文学习/精读笔记/02-水下语义敏感增强/关键点-润色版.md",
     "论文学习/精读笔记/04-GPP-LLIE/GPT精读资料.md",
     "论文学习/精读笔记/04-GPP-LLIE/GPP-LLIE.md",
-    "论文学习/精读笔记/04-GPP-LLIE/关键点.md",
     "论文学习/精读笔记/03-DATPRL-IR/DATPRL-IR.md",
     "论文学习/精读笔记/05-HybridAgent/HybridAgent.md",
     "论文学习/精读笔记/06-Multinex/GPT精读资料.md",
@@ -248,7 +248,6 @@
     "theme/TIPS for Blue Topaz/Attachemnt/Pasted image 20220331161219.png",
     "theme/TIPS for Blue Topaz/Attachemnt/Pasted image 20211229171215.png",
     "theme/TIPS for Blue Topaz/Attachemnt/obsidian_image.png",
-    "theme/TIPS for Blue Topaz/Attachemnt",
-    "theme/TIPS for Blue Topaz"
+    "theme/TIPS for Blue Topaz/Attachemnt"
   ]
 }
