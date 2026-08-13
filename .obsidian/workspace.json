@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "论文学习/精读笔记/01-4KAgent/关键点-润色版.md",
+                "file": "论文学习/精读笔记/04-GPP-LLIE/关键点.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "关键点-润色版"
+              "title": "关键点"
             }
           }
         ]
@@ -202,11 +202,12 @@
       "obsidian-git:Open Git source control": false
     }
   },
-  "active": "000d5cf243f9208a",
+  "active": "9375e6cecd3f314c",
   "lastOpenFiles": [
+    "论文学习/精读笔记/08-UARE",
     "论文学习/精读笔记/01-4KAgent/关键点.md",
-    "论文学习/精读笔记/01-4KAgent/4KAgent.md",
     "论文学习/精读笔记/01-4KAgent/关键点-润色版.md",
+    "论文学习/精读笔记/01-4KAgent/4KAgent.md",
     "论文学习/精读笔记/01-4KAgent/GPT精读资料.md",
     "论文学习/精读笔记/06-Multinex/关键点-润色版.md",
     "论文学习/精读笔记/04-GPP-LLIE/关键点-润色版.md",
@@ -234,7 +235,6 @@
     "论文学习",
     "论文学习.md",
     "test.md",
-    "OpenCV_Study/02 Learning/第18章 OpenCV的DNN模块.md",
     "Obsidian_data",
     "theme/TIPS for Blue Topaz/Example/◾ TableExample",
     "theme/TIPS for Blue Topaz/Example/◾ Cssclass声明样式举例",
