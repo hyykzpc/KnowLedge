@@ -10,11 +10,17 @@
           {
             "id": "512d13b3c06cc47e",
             "type": "leaf",
+            "pinned": true,
             "state": {
-              "type": "empty",
-              "state": {},
+              "type": "markdown",
+              "state": {
+                "file": "homepage.md",
+                "mode": "preview",
+                "source": false
+              },
+              "pinned": true,
               "icon": "lucide-file",
-              "title": "新标签页"
+              "title": "homepage"
             }
           }
         ]
@@ -94,6 +100,16 @@
               "state": {},
               "icon": "lucide-file",
               "title": "新标签页"
+            }
+          },
+          {
+            "id": "32fd5f11b19c6ddb",
+            "type": "leaf",
+            "state": {
+              "type": "calendar",
+              "state": {},
+              "icon": "calendar-with-checkmark",
+              "title": "Calendar"
             }
           }
         ]
@@ -188,6 +204,13 @@
   },
   "left-ribbon": {
     "hiddenItems": {
+      "templater-obsidian:Templater": false,
+      "obsidian-media-db-plugin:Add new Media DB entry": false,
+      "obsidian-book-search-plugin:Create new book note": false,
+      "obsidian-excalidraw-plugin:New drawing": false,
+      "homepage:Open homepage": false,
+      "learning-system:Open learning overview(sidebar)": false,
+      "learning-system:Start review": false,
       "switcher:打开快速切换": false,
       "graph:查看关系图谱": false,
       "canvas:新建白板": false,
@@ -195,10 +218,11 @@
       "templates:插入模板": false,
       "command-palette:打开命令面板": false,
       "bases:新建数据库": false,
-      "obsidian-git:Open Git source control": false
+      "obsidian-git:Open Git source control": false,
+      "periodic-notes:Open today": false
     }
   },
-  "active": "9375e6cecd3f314c",
+  "active": "512d13b3c06cc47e",
   "lastOpenFiles": [
     "README.md",
     "oral_English/推免面试_两个项目完整复习手册.txt",

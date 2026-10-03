@@ -1,0 +1,9 @@
+{
+  "templates": true,
+  "useDefaultFrontMatter": false,
+  "enableTemplaterIntegration": true,
+  "openNoteInNewTab": true,
+  "movieFolder": "2.Read/media-DB/movie",
+  "movieTemplate": "10.Template/book&movie/movie-en.md",
+  "movieFileNameTemplate": "{{ title }} ({{ year }})"
+}
